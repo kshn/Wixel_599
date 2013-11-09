@@ -1,0 +1,1590 @@
+                              1 ;--------------------------------------------------------
+                              2 ; File Created by SDCC : free open source ANSI-C Compiler
+                              3 ; Version 3.1.0 #7066 (Nov 22 2011) (MINGW32)
+                              4 ; This file was generated Tue Nov 06 19:38:51 2012
+                              5 ;--------------------------------------------------------
+                              6 	.module radio_receive_test_with_usb_com
+                              7 	.optsdcc -mmcs51 --model-medium
+                              8 	
+                              9 ;--------------------------------------------------------
+                             10 ; Public variables in this module
+                             11 ;--------------------------------------------------------
+                             12 	.globl _main
+                             13 	.globl _receivePackets
+                             14 	.globl _processBytesFromUsb
+                             15 	.globl _processByte
+                             16 	.globl _executeCommand
+                             17 	.globl _updateLeds
+                             18 	.globl _sprintf
+                             19 	.globl _radioQueueChangeChannel
+                             20 	.globl _radioQueueRxDoneWithPacket
+                             21 	.globl _radioQueueRxCurrentPacket
+                             22 	.globl _radioQueueInit
+                             23 	.globl _usbComTxSend
+                             24 	.globl _usbComTxAvailable
+                             25 	.globl _usbComRxReceiveByte
+                             26 	.globl _usbComRxAvailable
+                             27 	.globl _usbComService
+                             28 	.globl _usbShowStatusWithGreenLed
+                             29 	.globl _usbInit
+                             30 	.globl _getMs
+                             31 	.globl _boardService
+                             32 	.globl _systemInit
+                             33 	.globl _response
+                             34 	.globl _lastTx
+                             35 	.globl _receivingPackets
+                             36 	.globl _lastPacketId
+                             37 	.globl _lostPacketCount
+                             38 	.globl _dataBytesReceived
+                             39 	.globl _dataBytesLeft
+                             40 	.globl _dataBytes
+                             41 	.globl _commandByte
+                             42 	.globl _serialProtocolError
+                             43 	.globl _yellowLedOn
+                             44 ;--------------------------------------------------------
+                             45 ; special function registers
+                             46 ;--------------------------------------------------------
+                             47 	.area RSEG    (ABS,DATA)
+   0000                      48 	.org 0x0000
+                    0080     49 Fradio_receive_test_with_usb_com$P0$0$0 == 0x0080
+                    0080     50 _P0	=	0x0080
+                    0081     51 Fradio_receive_test_with_usb_com$SP$0$0 == 0x0081
+                    0081     52 _SP	=	0x0081
+                    0082     53 Fradio_receive_test_with_usb_com$DPL0$0$0 == 0x0082
+                    0082     54 _DPL0	=	0x0082
+                    0083     55 Fradio_receive_test_with_usb_com$DPH0$0$0 == 0x0083
+                    0083     56 _DPH0	=	0x0083
+                    0084     57 Fradio_receive_test_with_usb_com$DPL1$0$0 == 0x0084
+                    0084     58 _DPL1	=	0x0084
+                    0085     59 Fradio_receive_test_with_usb_com$DPH1$0$0 == 0x0085
+                    0085     60 _DPH1	=	0x0085
+                    0086     61 Fradio_receive_test_with_usb_com$U0CSR$0$0 == 0x0086
+                    0086     62 _U0CSR	=	0x0086
+                    0087     63 Fradio_receive_test_with_usb_com$PCON$0$0 == 0x0087
+                    0087     64 _PCON	=	0x0087
+                    0088     65 Fradio_receive_test_with_usb_com$TCON$0$0 == 0x0088
+                    0088     66 _TCON	=	0x0088
+                    0089     67 Fradio_receive_test_with_usb_com$P0IFG$0$0 == 0x0089
+                    0089     68 _P0IFG	=	0x0089
+                    008A     69 Fradio_receive_test_with_usb_com$P1IFG$0$0 == 0x008a
+                    008A     70 _P1IFG	=	0x008a
+                    008B     71 Fradio_receive_test_with_usb_com$P2IFG$0$0 == 0x008b
+                    008B     72 _P2IFG	=	0x008b
+                    008C     73 Fradio_receive_test_with_usb_com$PICTL$0$0 == 0x008c
+                    008C     74 _PICTL	=	0x008c
+                    008D     75 Fradio_receive_test_with_usb_com$P1IEN$0$0 == 0x008d
+                    008D     76 _P1IEN	=	0x008d
+                    008F     77 Fradio_receive_test_with_usb_com$P0INP$0$0 == 0x008f
+                    008F     78 _P0INP	=	0x008f
+                    0090     79 Fradio_receive_test_with_usb_com$P1$0$0 == 0x0090
+                    0090     80 _P1	=	0x0090
+                    0091     81 Fradio_receive_test_with_usb_com$RFIM$0$0 == 0x0091
+                    0091     82 _RFIM	=	0x0091
+                    0092     83 Fradio_receive_test_with_usb_com$DPS$0$0 == 0x0092
+                    0092     84 _DPS	=	0x0092
+                    0093     85 Fradio_receive_test_with_usb_com$MPAGE$0$0 == 0x0093
+                    0093     86 _MPAGE	=	0x0093
+                    0095     87 Fradio_receive_test_with_usb_com$ENDIAN$0$0 == 0x0095
+                    0095     88 _ENDIAN	=	0x0095
+                    0098     89 Fradio_receive_test_with_usb_com$S0CON$0$0 == 0x0098
+                    0098     90 _S0CON	=	0x0098
+                    009A     91 Fradio_receive_test_with_usb_com$IEN2$0$0 == 0x009a
+                    009A     92 _IEN2	=	0x009a
+                    009B     93 Fradio_receive_test_with_usb_com$S1CON$0$0 == 0x009b
+                    009B     94 _S1CON	=	0x009b
+                    009C     95 Fradio_receive_test_with_usb_com$T2CT$0$0 == 0x009c
+                    009C     96 _T2CT	=	0x009c
+                    009D     97 Fradio_receive_test_with_usb_com$T2PR$0$0 == 0x009d
+                    009D     98 _T2PR	=	0x009d
+                    009E     99 Fradio_receive_test_with_usb_com$T2CTL$0$0 == 0x009e
+                    009E    100 _T2CTL	=	0x009e
+                    00A0    101 Fradio_receive_test_with_usb_com$P2$0$0 == 0x00a0
+                    00A0    102 _P2	=	0x00a0
+                    00A1    103 Fradio_receive_test_with_usb_com$WORIRQ$0$0 == 0x00a1
+                    00A1    104 _WORIRQ	=	0x00a1
+                    00A2    105 Fradio_receive_test_with_usb_com$WORCTRL$0$0 == 0x00a2
+                    00A2    106 _WORCTRL	=	0x00a2
+                    00A3    107 Fradio_receive_test_with_usb_com$WOREVT0$0$0 == 0x00a3
+                    00A3    108 _WOREVT0	=	0x00a3
+                    00A4    109 Fradio_receive_test_with_usb_com$WOREVT1$0$0 == 0x00a4
+                    00A4    110 _WOREVT1	=	0x00a4
+                    00A5    111 Fradio_receive_test_with_usb_com$WORTIME0$0$0 == 0x00a5
+                    00A5    112 _WORTIME0	=	0x00a5
+                    00A6    113 Fradio_receive_test_with_usb_com$WORTIME1$0$0 == 0x00a6
+                    00A6    114 _WORTIME1	=	0x00a6
+                    00A8    115 Fradio_receive_test_with_usb_com$IEN0$0$0 == 0x00a8
+                    00A8    116 _IEN0	=	0x00a8
+                    00A9    117 Fradio_receive_test_with_usb_com$IP0$0$0 == 0x00a9
+                    00A9    118 _IP0	=	0x00a9
+                    00AB    119 Fradio_receive_test_with_usb_com$FWT$0$0 == 0x00ab
+                    00AB    120 _FWT	=	0x00ab
+                    00AC    121 Fradio_receive_test_with_usb_com$FADDRL$0$0 == 0x00ac
+                    00AC    122 _FADDRL	=	0x00ac
+                    00AD    123 Fradio_receive_test_with_usb_com$FADDRH$0$0 == 0x00ad
+                    00AD    124 _FADDRH	=	0x00ad
+                    00AE    125 Fradio_receive_test_with_usb_com$FCTL$0$0 == 0x00ae
+                    00AE    126 _FCTL	=	0x00ae
+                    00AF    127 Fradio_receive_test_with_usb_com$FWDATA$0$0 == 0x00af
+                    00AF    128 _FWDATA	=	0x00af
+                    00B1    129 Fradio_receive_test_with_usb_com$ENCDI$0$0 == 0x00b1
+                    00B1    130 _ENCDI	=	0x00b1
+                    00B2    131 Fradio_receive_test_with_usb_com$ENCDO$0$0 == 0x00b2
+                    00B2    132 _ENCDO	=	0x00b2
+                    00B3    133 Fradio_receive_test_with_usb_com$ENCCS$0$0 == 0x00b3
+                    00B3    134 _ENCCS	=	0x00b3
+                    00B4    135 Fradio_receive_test_with_usb_com$ADCCON1$0$0 == 0x00b4
+                    00B4    136 _ADCCON1	=	0x00b4
+                    00B5    137 Fradio_receive_test_with_usb_com$ADCCON2$0$0 == 0x00b5
+                    00B5    138 _ADCCON2	=	0x00b5
+                    00B6    139 Fradio_receive_test_with_usb_com$ADCCON3$0$0 == 0x00b6
+                    00B6    140 _ADCCON3	=	0x00b6
+                    00B8    141 Fradio_receive_test_with_usb_com$IEN1$0$0 == 0x00b8
+                    00B8    142 _IEN1	=	0x00b8
+                    00B9    143 Fradio_receive_test_with_usb_com$IP1$0$0 == 0x00b9
+                    00B9    144 _IP1	=	0x00b9
+                    00BA    145 Fradio_receive_test_with_usb_com$ADCL$0$0 == 0x00ba
+                    00BA    146 _ADCL	=	0x00ba
+                    00BB    147 Fradio_receive_test_with_usb_com$ADCH$0$0 == 0x00bb
+                    00BB    148 _ADCH	=	0x00bb
+                    00BC    149 Fradio_receive_test_with_usb_com$RNDL$0$0 == 0x00bc
+                    00BC    150 _RNDL	=	0x00bc
+                    00BD    151 Fradio_receive_test_with_usb_com$RNDH$0$0 == 0x00bd
+                    00BD    152 _RNDH	=	0x00bd
+                    00BE    153 Fradio_receive_test_with_usb_com$SLEEP$0$0 == 0x00be
+                    00BE    154 _SLEEP	=	0x00be
+                    00C0    155 Fradio_receive_test_with_usb_com$IRCON$0$0 == 0x00c0
+                    00C0    156 _IRCON	=	0x00c0
+                    00C1    157 Fradio_receive_test_with_usb_com$U0DBUF$0$0 == 0x00c1
+                    00C1    158 _U0DBUF	=	0x00c1
+                    00C2    159 Fradio_receive_test_with_usb_com$U0BAUD$0$0 == 0x00c2
+                    00C2    160 _U0BAUD	=	0x00c2
+                    00C4    161 Fradio_receive_test_with_usb_com$U0UCR$0$0 == 0x00c4
+                    00C4    162 _U0UCR	=	0x00c4
+                    00C5    163 Fradio_receive_test_with_usb_com$U0GCR$0$0 == 0x00c5
+                    00C5    164 _U0GCR	=	0x00c5
+                    00C6    165 Fradio_receive_test_with_usb_com$CLKCON$0$0 == 0x00c6
+                    00C6    166 _CLKCON	=	0x00c6
+                    00C7    167 Fradio_receive_test_with_usb_com$MEMCTR$0$0 == 0x00c7
+                    00C7    168 _MEMCTR	=	0x00c7
+                    00C9    169 Fradio_receive_test_with_usb_com$WDCTL$0$0 == 0x00c9
+                    00C9    170 _WDCTL	=	0x00c9
+                    00CA    171 Fradio_receive_test_with_usb_com$T3CNT$0$0 == 0x00ca
+                    00CA    172 _T3CNT	=	0x00ca
+                    00CB    173 Fradio_receive_test_with_usb_com$T3CTL$0$0 == 0x00cb
+                    00CB    174 _T3CTL	=	0x00cb
+                    00CC    175 Fradio_receive_test_with_usb_com$T3CCTL0$0$0 == 0x00cc
+                    00CC    176 _T3CCTL0	=	0x00cc
+                    00CD    177 Fradio_receive_test_with_usb_com$T3CC0$0$0 == 0x00cd
+                    00CD    178 _T3CC0	=	0x00cd
+                    00CE    179 Fradio_receive_test_with_usb_com$T3CCTL1$0$0 == 0x00ce
+                    00CE    180 _T3CCTL1	=	0x00ce
+                    00CF    181 Fradio_receive_test_with_usb_com$T3CC1$0$0 == 0x00cf
+                    00CF    182 _T3CC1	=	0x00cf
+                    00D0    183 Fradio_receive_test_with_usb_com$PSW$0$0 == 0x00d0
+                    00D0    184 _PSW	=	0x00d0
+                    00D1    185 Fradio_receive_test_with_usb_com$DMAIRQ$0$0 == 0x00d1
+                    00D1    186 _DMAIRQ	=	0x00d1
+                    00D2    187 Fradio_receive_test_with_usb_com$DMA1CFGL$0$0 == 0x00d2
+                    00D2    188 _DMA1CFGL	=	0x00d2
+                    00D3    189 Fradio_receive_test_with_usb_com$DMA1CFGH$0$0 == 0x00d3
+                    00D3    190 _DMA1CFGH	=	0x00d3
+                    00D4    191 Fradio_receive_test_with_usb_com$DMA0CFGL$0$0 == 0x00d4
+                    00D4    192 _DMA0CFGL	=	0x00d4
+                    00D5    193 Fradio_receive_test_with_usb_com$DMA0CFGH$0$0 == 0x00d5
+                    00D5    194 _DMA0CFGH	=	0x00d5
+                    00D6    195 Fradio_receive_test_with_usb_com$DMAARM$0$0 == 0x00d6
+                    00D6    196 _DMAARM	=	0x00d6
+                    00D7    197 Fradio_receive_test_with_usb_com$DMAREQ$0$0 == 0x00d7
+                    00D7    198 _DMAREQ	=	0x00d7
+                    00D8    199 Fradio_receive_test_with_usb_com$TIMIF$0$0 == 0x00d8
+                    00D8    200 _TIMIF	=	0x00d8
+                    00D9    201 Fradio_receive_test_with_usb_com$RFD$0$0 == 0x00d9
+                    00D9    202 _RFD	=	0x00d9
+                    00DA    203 Fradio_receive_test_with_usb_com$T1CC0L$0$0 == 0x00da
+                    00DA    204 _T1CC0L	=	0x00da
+                    00DB    205 Fradio_receive_test_with_usb_com$T1CC0H$0$0 == 0x00db
+                    00DB    206 _T1CC0H	=	0x00db
+                    00DC    207 Fradio_receive_test_with_usb_com$T1CC1L$0$0 == 0x00dc
+                    00DC    208 _T1CC1L	=	0x00dc
+                    00DD    209 Fradio_receive_test_with_usb_com$T1CC1H$0$0 == 0x00dd
+                    00DD    210 _T1CC1H	=	0x00dd
+                    00DE    211 Fradio_receive_test_with_usb_com$T1CC2L$0$0 == 0x00de
+                    00DE    212 _T1CC2L	=	0x00de
+                    00DF    213 Fradio_receive_test_with_usb_com$T1CC2H$0$0 == 0x00df
+                    00DF    214 _T1CC2H	=	0x00df
+                    00E0    215 Fradio_receive_test_with_usb_com$ACC$0$0 == 0x00e0
+                    00E0    216 _ACC	=	0x00e0
+                    00E1    217 Fradio_receive_test_with_usb_com$RFST$0$0 == 0x00e1
+                    00E1    218 _RFST	=	0x00e1
+                    00E2    219 Fradio_receive_test_with_usb_com$T1CNTL$0$0 == 0x00e2
+                    00E2    220 _T1CNTL	=	0x00e2
+                    00E3    221 Fradio_receive_test_with_usb_com$T1CNTH$0$0 == 0x00e3
+                    00E3    222 _T1CNTH	=	0x00e3
+                    00E4    223 Fradio_receive_test_with_usb_com$T1CTL$0$0 == 0x00e4
+                    00E4    224 _T1CTL	=	0x00e4
+                    00E5    225 Fradio_receive_test_with_usb_com$T1CCTL0$0$0 == 0x00e5
+                    00E5    226 _T1CCTL0	=	0x00e5
+                    00E6    227 Fradio_receive_test_with_usb_com$T1CCTL1$0$0 == 0x00e6
+                    00E6    228 _T1CCTL1	=	0x00e6
+                    00E7    229 Fradio_receive_test_with_usb_com$T1CCTL2$0$0 == 0x00e7
+                    00E7    230 _T1CCTL2	=	0x00e7
+                    00E8    231 Fradio_receive_test_with_usb_com$IRCON2$0$0 == 0x00e8
+                    00E8    232 _IRCON2	=	0x00e8
+                    00E9    233 Fradio_receive_test_with_usb_com$RFIF$0$0 == 0x00e9
+                    00E9    234 _RFIF	=	0x00e9
+                    00EA    235 Fradio_receive_test_with_usb_com$T4CNT$0$0 == 0x00ea
+                    00EA    236 _T4CNT	=	0x00ea
+                    00EB    237 Fradio_receive_test_with_usb_com$T4CTL$0$0 == 0x00eb
+                    00EB    238 _T4CTL	=	0x00eb
+                    00EC    239 Fradio_receive_test_with_usb_com$T4CCTL0$0$0 == 0x00ec
+                    00EC    240 _T4CCTL0	=	0x00ec
+                    00ED    241 Fradio_receive_test_with_usb_com$T4CC0$0$0 == 0x00ed
+                    00ED    242 _T4CC0	=	0x00ed
+                    00EE    243 Fradio_receive_test_with_usb_com$T4CCTL1$0$0 == 0x00ee
+                    00EE    244 _T4CCTL1	=	0x00ee
+                    00EF    245 Fradio_receive_test_with_usb_com$T4CC1$0$0 == 0x00ef
+                    00EF    246 _T4CC1	=	0x00ef
+                    00F0    247 Fradio_receive_test_with_usb_com$B$0$0 == 0x00f0
+                    00F0    248 _B	=	0x00f0
+                    00F1    249 Fradio_receive_test_with_usb_com$PERCFG$0$0 == 0x00f1
+                    00F1    250 _PERCFG	=	0x00f1
+                    00F2    251 Fradio_receive_test_with_usb_com$ADCCFG$0$0 == 0x00f2
+                    00F2    252 _ADCCFG	=	0x00f2
+                    00F3    253 Fradio_receive_test_with_usb_com$P0SEL$0$0 == 0x00f3
+                    00F3    254 _P0SEL	=	0x00f3
+                    00F4    255 Fradio_receive_test_with_usb_com$P1SEL$0$0 == 0x00f4
+                    00F4    256 _P1SEL	=	0x00f4
+                    00F5    257 Fradio_receive_test_with_usb_com$P2SEL$0$0 == 0x00f5
+                    00F5    258 _P2SEL	=	0x00f5
+                    00F6    259 Fradio_receive_test_with_usb_com$P1INP$0$0 == 0x00f6
+                    00F6    260 _P1INP	=	0x00f6
+                    00F7    261 Fradio_receive_test_with_usb_com$P2INP$0$0 == 0x00f7
+                    00F7    262 _P2INP	=	0x00f7
+                    00F8    263 Fradio_receive_test_with_usb_com$U1CSR$0$0 == 0x00f8
+                    00F8    264 _U1CSR	=	0x00f8
+                    00F9    265 Fradio_receive_test_with_usb_com$U1DBUF$0$0 == 0x00f9
+                    00F9    266 _U1DBUF	=	0x00f9
+                    00FA    267 Fradio_receive_test_with_usb_com$U1BAUD$0$0 == 0x00fa
+                    00FA    268 _U1BAUD	=	0x00fa
+                    00FB    269 Fradio_receive_test_with_usb_com$U1UCR$0$0 == 0x00fb
+                    00FB    270 _U1UCR	=	0x00fb
+                    00FC    271 Fradio_receive_test_with_usb_com$U1GCR$0$0 == 0x00fc
+                    00FC    272 _U1GCR	=	0x00fc
+                    00FD    273 Fradio_receive_test_with_usb_com$P0DIR$0$0 == 0x00fd
+                    00FD    274 _P0DIR	=	0x00fd
+                    00FE    275 Fradio_receive_test_with_usb_com$P1DIR$0$0 == 0x00fe
+                    00FE    276 _P1DIR	=	0x00fe
+                    00FF    277 Fradio_receive_test_with_usb_com$P2DIR$0$0 == 0x00ff
+                    00FF    278 _P2DIR	=	0x00ff
+                    FFFFD5D4    279 Fradio_receive_test_with_usb_com$DMA0CFG$0$0 == 0xffffd5d4
+                    FFFFD5D4    280 _DMA0CFG	=	0xffffd5d4
+                    FFFFD3D2    281 Fradio_receive_test_with_usb_com$DMA1CFG$0$0 == 0xffffd3d2
+                    FFFFD3D2    282 _DMA1CFG	=	0xffffd3d2
+                    FFFFADAC    283 Fradio_receive_test_with_usb_com$FADDR$0$0 == 0xffffadac
+                    FFFFADAC    284 _FADDR	=	0xffffadac
+                    FFFFBBBA    285 Fradio_receive_test_with_usb_com$ADC$0$0 == 0xffffbbba
+                    FFFFBBBA    286 _ADC	=	0xffffbbba
+                    FFFFDBDA    287 Fradio_receive_test_with_usb_com$T1CC0$0$0 == 0xffffdbda
+                    FFFFDBDA    288 _T1CC0	=	0xffffdbda
+                    FFFFDDDC    289 Fradio_receive_test_with_usb_com$T1CC1$0$0 == 0xffffdddc
+                    FFFFDDDC    290 _T1CC1	=	0xffffdddc
+                    FFFFDFDE    291 Fradio_receive_test_with_usb_com$T1CC2$0$0 == 0xffffdfde
+                    FFFFDFDE    292 _T1CC2	=	0xffffdfde
+                            293 ;--------------------------------------------------------
+                            294 ; special function bits
+                            295 ;--------------------------------------------------------
+                            296 	.area RSEG    (ABS,DATA)
+   0000                     297 	.org 0x0000
+                    0080    298 Fradio_receive_test_with_usb_com$P0_0$0$0 == 0x0080
+                    0080    299 _P0_0	=	0x0080
+                    0081    300 Fradio_receive_test_with_usb_com$P0_1$0$0 == 0x0081
+                    0081    301 _P0_1	=	0x0081
+                    0082    302 Fradio_receive_test_with_usb_com$P0_2$0$0 == 0x0082
+                    0082    303 _P0_2	=	0x0082
+                    0083    304 Fradio_receive_test_with_usb_com$P0_3$0$0 == 0x0083
+                    0083    305 _P0_3	=	0x0083
+                    0084    306 Fradio_receive_test_with_usb_com$P0_4$0$0 == 0x0084
+                    0084    307 _P0_4	=	0x0084
+                    0085    308 Fradio_receive_test_with_usb_com$P0_5$0$0 == 0x0085
+                    0085    309 _P0_5	=	0x0085
+                    0086    310 Fradio_receive_test_with_usb_com$P0_6$0$0 == 0x0086
+                    0086    311 _P0_6	=	0x0086
+                    0087    312 Fradio_receive_test_with_usb_com$P0_7$0$0 == 0x0087
+                    0087    313 _P0_7	=	0x0087
+                    0088    314 Fradio_receive_test_with_usb_com$_TCON_0$0$0 == 0x0088
+                    0088    315 __TCON_0	=	0x0088
+                    0089    316 Fradio_receive_test_with_usb_com$RFTXRXIF$0$0 == 0x0089
+                    0089    317 _RFTXRXIF	=	0x0089
+                    008A    318 Fradio_receive_test_with_usb_com$_TCON_2$0$0 == 0x008a
+                    008A    319 __TCON_2	=	0x008a
+                    008B    320 Fradio_receive_test_with_usb_com$URX0IF$0$0 == 0x008b
+                    008B    321 _URX0IF	=	0x008b
+                    008C    322 Fradio_receive_test_with_usb_com$_TCON_4$0$0 == 0x008c
+                    008C    323 __TCON_4	=	0x008c
+                    008D    324 Fradio_receive_test_with_usb_com$ADCIF$0$0 == 0x008d
+                    008D    325 _ADCIF	=	0x008d
+                    008E    326 Fradio_receive_test_with_usb_com$_TCON_6$0$0 == 0x008e
+                    008E    327 __TCON_6	=	0x008e
+                    008F    328 Fradio_receive_test_with_usb_com$URX1IF$0$0 == 0x008f
+                    008F    329 _URX1IF	=	0x008f
+                    0090    330 Fradio_receive_test_with_usb_com$P1_0$0$0 == 0x0090
+                    0090    331 _P1_0	=	0x0090
+                    0091    332 Fradio_receive_test_with_usb_com$P1_1$0$0 == 0x0091
+                    0091    333 _P1_1	=	0x0091
+                    0092    334 Fradio_receive_test_with_usb_com$P1_2$0$0 == 0x0092
+                    0092    335 _P1_2	=	0x0092
+                    0093    336 Fradio_receive_test_with_usb_com$P1_3$0$0 == 0x0093
+                    0093    337 _P1_3	=	0x0093
+                    0094    338 Fradio_receive_test_with_usb_com$P1_4$0$0 == 0x0094
+                    0094    339 _P1_4	=	0x0094
+                    0095    340 Fradio_receive_test_with_usb_com$P1_5$0$0 == 0x0095
+                    0095    341 _P1_5	=	0x0095
+                    0096    342 Fradio_receive_test_with_usb_com$P1_6$0$0 == 0x0096
+                    0096    343 _P1_6	=	0x0096
+                    0097    344 Fradio_receive_test_with_usb_com$P1_7$0$0 == 0x0097
+                    0097    345 _P1_7	=	0x0097
+                    0098    346 Fradio_receive_test_with_usb_com$ENCIF_0$0$0 == 0x0098
+                    0098    347 _ENCIF_0	=	0x0098
+                    0099    348 Fradio_receive_test_with_usb_com$ENCIF_1$0$0 == 0x0099
+                    0099    349 _ENCIF_1	=	0x0099
+                    009A    350 Fradio_receive_test_with_usb_com$_SOCON2$0$0 == 0x009a
+                    009A    351 __SOCON2	=	0x009a
+                    009B    352 Fradio_receive_test_with_usb_com$_SOCON3$0$0 == 0x009b
+                    009B    353 __SOCON3	=	0x009b
+                    009C    354 Fradio_receive_test_with_usb_com$_SOCON4$0$0 == 0x009c
+                    009C    355 __SOCON4	=	0x009c
+                    009D    356 Fradio_receive_test_with_usb_com$_SOCON5$0$0 == 0x009d
+                    009D    357 __SOCON5	=	0x009d
+                    009E    358 Fradio_receive_test_with_usb_com$_SOCON6$0$0 == 0x009e
+                    009E    359 __SOCON6	=	0x009e
+                    009F    360 Fradio_receive_test_with_usb_com$_SOCON7$0$0 == 0x009f
+                    009F    361 __SOCON7	=	0x009f
+                    00A0    362 Fradio_receive_test_with_usb_com$P2_0$0$0 == 0x00a0
+                    00A0    363 _P2_0	=	0x00a0
+                    00A1    364 Fradio_receive_test_with_usb_com$P2_1$0$0 == 0x00a1
+                    00A1    365 _P2_1	=	0x00a1
+                    00A2    366 Fradio_receive_test_with_usb_com$P2_2$0$0 == 0x00a2
+                    00A2    367 _P2_2	=	0x00a2
+                    00A3    368 Fradio_receive_test_with_usb_com$P2_3$0$0 == 0x00a3
+                    00A3    369 _P2_3	=	0x00a3
+                    00A4    370 Fradio_receive_test_with_usb_com$P2_4$0$0 == 0x00a4
+                    00A4    371 _P2_4	=	0x00a4
+                    00A5    372 Fradio_receive_test_with_usb_com$P2_5$0$0 == 0x00a5
+                    00A5    373 _P2_5	=	0x00a5
+                    00A6    374 Fradio_receive_test_with_usb_com$P2_6$0$0 == 0x00a6
+                    00A6    375 _P2_6	=	0x00a6
+                    00A7    376 Fradio_receive_test_with_usb_com$P2_7$0$0 == 0x00a7
+                    00A7    377 _P2_7	=	0x00a7
+                    00A8    378 Fradio_receive_test_with_usb_com$RFTXRXIE$0$0 == 0x00a8
+                    00A8    379 _RFTXRXIE	=	0x00a8
+                    00A9    380 Fradio_receive_test_with_usb_com$ADCIE$0$0 == 0x00a9
+                    00A9    381 _ADCIE	=	0x00a9
+                    00AA    382 Fradio_receive_test_with_usb_com$URX0IE$0$0 == 0x00aa
+                    00AA    383 _URX0IE	=	0x00aa
+                    00AB    384 Fradio_receive_test_with_usb_com$URX1IE$0$0 == 0x00ab
+                    00AB    385 _URX1IE	=	0x00ab
+                    00AC    386 Fradio_receive_test_with_usb_com$ENCIE$0$0 == 0x00ac
+                    00AC    387 _ENCIE	=	0x00ac
+                    00AD    388 Fradio_receive_test_with_usb_com$STIE$0$0 == 0x00ad
+                    00AD    389 _STIE	=	0x00ad
+                    00AE    390 Fradio_receive_test_with_usb_com$_IEN06$0$0 == 0x00ae
+                    00AE    391 __IEN06	=	0x00ae
+                    00AF    392 Fradio_receive_test_with_usb_com$EA$0$0 == 0x00af
+                    00AF    393 _EA	=	0x00af
+                    00B8    394 Fradio_receive_test_with_usb_com$DMAIE$0$0 == 0x00b8
+                    00B8    395 _DMAIE	=	0x00b8
+                    00B9    396 Fradio_receive_test_with_usb_com$T1IE$0$0 == 0x00b9
+                    00B9    397 _T1IE	=	0x00b9
+                    00BA    398 Fradio_receive_test_with_usb_com$T2IE$0$0 == 0x00ba
+                    00BA    399 _T2IE	=	0x00ba
+                    00BB    400 Fradio_receive_test_with_usb_com$T3IE$0$0 == 0x00bb
+                    00BB    401 _T3IE	=	0x00bb
+                    00BC    402 Fradio_receive_test_with_usb_com$T4IE$0$0 == 0x00bc
+                    00BC    403 _T4IE	=	0x00bc
+                    00BD    404 Fradio_receive_test_with_usb_com$P0IE$0$0 == 0x00bd
+                    00BD    405 _P0IE	=	0x00bd
+                    00BE    406 Fradio_receive_test_with_usb_com$_IEN16$0$0 == 0x00be
+                    00BE    407 __IEN16	=	0x00be
+                    00BF    408 Fradio_receive_test_with_usb_com$_IEN17$0$0 == 0x00bf
+                    00BF    409 __IEN17	=	0x00bf
+                    00C0    410 Fradio_receive_test_with_usb_com$DMAIF$0$0 == 0x00c0
+                    00C0    411 _DMAIF	=	0x00c0
+                    00C1    412 Fradio_receive_test_with_usb_com$T1IF$0$0 == 0x00c1
+                    00C1    413 _T1IF	=	0x00c1
+                    00C2    414 Fradio_receive_test_with_usb_com$T2IF$0$0 == 0x00c2
+                    00C2    415 _T2IF	=	0x00c2
+                    00C3    416 Fradio_receive_test_with_usb_com$T3IF$0$0 == 0x00c3
+                    00C3    417 _T3IF	=	0x00c3
+                    00C4    418 Fradio_receive_test_with_usb_com$T4IF$0$0 == 0x00c4
+                    00C4    419 _T4IF	=	0x00c4
+                    00C5    420 Fradio_receive_test_with_usb_com$P0IF$0$0 == 0x00c5
+                    00C5    421 _P0IF	=	0x00c5
+                    00C6    422 Fradio_receive_test_with_usb_com$_IRCON6$0$0 == 0x00c6
+                    00C6    423 __IRCON6	=	0x00c6
+                    00C7    424 Fradio_receive_test_with_usb_com$STIF$0$0 == 0x00c7
+                    00C7    425 _STIF	=	0x00c7
+                    00D0    426 Fradio_receive_test_with_usb_com$P$0$0 == 0x00d0
+                    00D0    427 _P	=	0x00d0
+                    00D1    428 Fradio_receive_test_with_usb_com$F1$0$0 == 0x00d1
+                    00D1    429 _F1	=	0x00d1
+                    00D2    430 Fradio_receive_test_with_usb_com$OV$0$0 == 0x00d2
+                    00D2    431 _OV	=	0x00d2
+                    00D3    432 Fradio_receive_test_with_usb_com$RS0$0$0 == 0x00d3
+                    00D3    433 _RS0	=	0x00d3
+                    00D4    434 Fradio_receive_test_with_usb_com$RS1$0$0 == 0x00d4
+                    00D4    435 _RS1	=	0x00d4
+                    00D5    436 Fradio_receive_test_with_usb_com$F0$0$0 == 0x00d5
+                    00D5    437 _F0	=	0x00d5
+                    00D6    438 Fradio_receive_test_with_usb_com$AC$0$0 == 0x00d6
+                    00D6    439 _AC	=	0x00d6
+                    00D7    440 Fradio_receive_test_with_usb_com$CY$0$0 == 0x00d7
+                    00D7    441 _CY	=	0x00d7
+                    00D8    442 Fradio_receive_test_with_usb_com$T3OVFIF$0$0 == 0x00d8
+                    00D8    443 _T3OVFIF	=	0x00d8
+                    00D9    444 Fradio_receive_test_with_usb_com$T3CH0IF$0$0 == 0x00d9
+                    00D9    445 _T3CH0IF	=	0x00d9
+                    00DA    446 Fradio_receive_test_with_usb_com$T3CH1IF$0$0 == 0x00da
+                    00DA    447 _T3CH1IF	=	0x00da
+                    00DB    448 Fradio_receive_test_with_usb_com$T4OVFIF$0$0 == 0x00db
+                    00DB    449 _T4OVFIF	=	0x00db
+                    00DC    450 Fradio_receive_test_with_usb_com$T4CH0IF$0$0 == 0x00dc
+                    00DC    451 _T4CH0IF	=	0x00dc
+                    00DD    452 Fradio_receive_test_with_usb_com$T4CH1IF$0$0 == 0x00dd
+                    00DD    453 _T4CH1IF	=	0x00dd
+                    00DE    454 Fradio_receive_test_with_usb_com$OVFIM$0$0 == 0x00de
+                    00DE    455 _OVFIM	=	0x00de
+                    00DF    456 Fradio_receive_test_with_usb_com$_TIMIF7$0$0 == 0x00df
+                    00DF    457 __TIMIF7	=	0x00df
+                    00E0    458 Fradio_receive_test_with_usb_com$ACC_0$0$0 == 0x00e0
+                    00E0    459 _ACC_0	=	0x00e0
+                    00E1    460 Fradio_receive_test_with_usb_com$ACC_1$0$0 == 0x00e1
+                    00E1    461 _ACC_1	=	0x00e1
+                    00E2    462 Fradio_receive_test_with_usb_com$ACC_2$0$0 == 0x00e2
+                    00E2    463 _ACC_2	=	0x00e2
+                    00E3    464 Fradio_receive_test_with_usb_com$ACC_3$0$0 == 0x00e3
+                    00E3    465 _ACC_3	=	0x00e3
+                    00E4    466 Fradio_receive_test_with_usb_com$ACC_4$0$0 == 0x00e4
+                    00E4    467 _ACC_4	=	0x00e4
+                    00E5    468 Fradio_receive_test_with_usb_com$ACC_5$0$0 == 0x00e5
+                    00E5    469 _ACC_5	=	0x00e5
+                    00E6    470 Fradio_receive_test_with_usb_com$ACC_6$0$0 == 0x00e6
+                    00E6    471 _ACC_6	=	0x00e6
+                    00E7    472 Fradio_receive_test_with_usb_com$ACC_7$0$0 == 0x00e7
+                    00E7    473 _ACC_7	=	0x00e7
+                    00E8    474 Fradio_receive_test_with_usb_com$P2IF$0$0 == 0x00e8
+                    00E8    475 _P2IF	=	0x00e8
+                    00E9    476 Fradio_receive_test_with_usb_com$UTX0IF$0$0 == 0x00e9
+                    00E9    477 _UTX0IF	=	0x00e9
+                    00EA    478 Fradio_receive_test_with_usb_com$UTX1IF$0$0 == 0x00ea
+                    00EA    479 _UTX1IF	=	0x00ea
+                    00EB    480 Fradio_receive_test_with_usb_com$P1IF$0$0 == 0x00eb
+                    00EB    481 _P1IF	=	0x00eb
+                    00EC    482 Fradio_receive_test_with_usb_com$WDTIF$0$0 == 0x00ec
+                    00EC    483 _WDTIF	=	0x00ec
+                    00ED    484 Fradio_receive_test_with_usb_com$_IRCON25$0$0 == 0x00ed
+                    00ED    485 __IRCON25	=	0x00ed
+                    00EE    486 Fradio_receive_test_with_usb_com$_IRCON26$0$0 == 0x00ee
+                    00EE    487 __IRCON26	=	0x00ee
+                    00EF    488 Fradio_receive_test_with_usb_com$_IRCON27$0$0 == 0x00ef
+                    00EF    489 __IRCON27	=	0x00ef
+                    00F0    490 Fradio_receive_test_with_usb_com$B_0$0$0 == 0x00f0
+                    00F0    491 _B_0	=	0x00f0
+                    00F1    492 Fradio_receive_test_with_usb_com$B_1$0$0 == 0x00f1
+                    00F1    493 _B_1	=	0x00f1
+                    00F2    494 Fradio_receive_test_with_usb_com$B_2$0$0 == 0x00f2
+                    00F2    495 _B_2	=	0x00f2
+                    00F3    496 Fradio_receive_test_with_usb_com$B_3$0$0 == 0x00f3
+                    00F3    497 _B_3	=	0x00f3
+                    00F4    498 Fradio_receive_test_with_usb_com$B_4$0$0 == 0x00f4
+                    00F4    499 _B_4	=	0x00f4
+                    00F5    500 Fradio_receive_test_with_usb_com$B_5$0$0 == 0x00f5
+                    00F5    501 _B_5	=	0x00f5
+                    00F6    502 Fradio_receive_test_with_usb_com$B_6$0$0 == 0x00f6
+                    00F6    503 _B_6	=	0x00f6
+                    00F7    504 Fradio_receive_test_with_usb_com$B_7$0$0 == 0x00f7
+                    00F7    505 _B_7	=	0x00f7
+                    00F8    506 Fradio_receive_test_with_usb_com$U1ACTIVE$0$0 == 0x00f8
+                    00F8    507 _U1ACTIVE	=	0x00f8
+                    00F9    508 Fradio_receive_test_with_usb_com$U1TX_BYTE$0$0 == 0x00f9
+                    00F9    509 _U1TX_BYTE	=	0x00f9
+                    00FA    510 Fradio_receive_test_with_usb_com$U1RX_BYTE$0$0 == 0x00fa
+                    00FA    511 _U1RX_BYTE	=	0x00fa
+                    00FB    512 Fradio_receive_test_with_usb_com$U1ERR$0$0 == 0x00fb
+                    00FB    513 _U1ERR	=	0x00fb
+                    00FC    514 Fradio_receive_test_with_usb_com$U1FE$0$0 == 0x00fc
+                    00FC    515 _U1FE	=	0x00fc
+                    00FD    516 Fradio_receive_test_with_usb_com$U1SLAVE$0$0 == 0x00fd
+                    00FD    517 _U1SLAVE	=	0x00fd
+                    00FE    518 Fradio_receive_test_with_usb_com$U1RE$0$0 == 0x00fe
+                    00FE    519 _U1RE	=	0x00fe
+                    00FF    520 Fradio_receive_test_with_usb_com$U1MODE$0$0 == 0x00ff
+                    00FF    521 _U1MODE	=	0x00ff
+                            522 ;--------------------------------------------------------
+                            523 ; overlayable register banks
+                            524 ;--------------------------------------------------------
+                            525 	.area REG_BANK_0	(REL,OVR,DATA)
+   0000                     526 	.ds 8
+                            527 ;--------------------------------------------------------
+                            528 ; internal ram data
+                            529 ;--------------------------------------------------------
+                            530 	.area DSEG    (DATA)
+                            531 ;--------------------------------------------------------
+                            532 ; overlayable items in internal ram 
+                            533 ;--------------------------------------------------------
+                            534 	.area OSEG    (OVR,DATA)
+                            535 ;--------------------------------------------------------
+                            536 ; Stack segment in internal ram 
+                            537 ;--------------------------------------------------------
+                            538 	.area	SSEG	(DATA)
+   0000                     539 __start__stack:
+   0000                     540 	.ds	1
+                            541 
+                            542 ;--------------------------------------------------------
+                            543 ; indirectly addressable internal ram data
+                            544 ;--------------------------------------------------------
+                            545 	.area ISEG    (DATA)
+                            546 ;--------------------------------------------------------
+                            547 ; absolute internal ram data
+                            548 ;--------------------------------------------------------
+                            549 	.area IABS    (ABS,DATA)
+                            550 	.area IABS    (ABS,DATA)
+                            551 ;--------------------------------------------------------
+                            552 ; bit data
+                            553 ;--------------------------------------------------------
+                            554 	.area BSEG    (BIT)
+                    0000    555 G$yellowLedOn$0$0==.
+   0000                     556 _yellowLedOn::
+   0000                     557 	.ds 1
+                    0001    558 G$serialProtocolError$0$0==.
+   0001                     559 _serialProtocolError::
+   0001                     560 	.ds 1
+                            561 ;--------------------------------------------------------
+                            562 ; paged external ram data
+                            563 ;--------------------------------------------------------
+                            564 	.area PSEG    (PAG,XDATA)
+                    0000    565 G$commandByte$0$0==.
+   0000                     566 _commandByte::
+   0000                     567 	.ds 1
+                    0001    568 G$dataBytes$0$0==.
+   0001                     569 _dataBytes::
+   0001                     570 	.ds 32
+                    0021    571 G$dataBytesLeft$0$0==.
+   0021                     572 _dataBytesLeft::
+   0021                     573 	.ds 1
+                    0022    574 G$dataBytesReceived$0$0==.
+   0022                     575 _dataBytesReceived::
+   0022                     576 	.ds 1
+                    0023    577 G$lostPacketCount$0$0==.
+   0023                     578 _lostPacketCount::
+   0023                     579 	.ds 2
+                    0025    580 G$lastPacketId$0$0==.
+   0025                     581 _lastPacketId::
+   0025                     582 	.ds 2
+                    0027    583 G$receivingPackets$0$0==.
+   0027                     584 _receivingPackets::
+   0027                     585 	.ds 1
+                    0028    586 G$lastTx$0$0==.
+   0028                     587 _lastTx::
+   0028                     588 	.ds 4
+                    002C    589 Lradio_receive_test_with_usb_com.receivePackets$time$1$1==.
+   002C                     590 _receivePackets_time_1_1:
+   002C                     591 	.ds 4
+                            592 ;--------------------------------------------------------
+                            593 ; external ram data
+                            594 ;--------------------------------------------------------
+                            595 	.area XSEG    (XDATA)
+                    DF00    596 Fradio_receive_test_with_usb_com$SYNC1$0$0 == 0xdf00
+                    DF00    597 _SYNC1	=	0xdf00
+                    DF01    598 Fradio_receive_test_with_usb_com$SYNC0$0$0 == 0xdf01
+                    DF01    599 _SYNC0	=	0xdf01
+                    DF02    600 Fradio_receive_test_with_usb_com$PKTLEN$0$0 == 0xdf02
+                    DF02    601 _PKTLEN	=	0xdf02
+                    DF03    602 Fradio_receive_test_with_usb_com$PKTCTRL1$0$0 == 0xdf03
+                    DF03    603 _PKTCTRL1	=	0xdf03
+                    DF04    604 Fradio_receive_test_with_usb_com$PKTCTRL0$0$0 == 0xdf04
+                    DF04    605 _PKTCTRL0	=	0xdf04
+                    DF05    606 Fradio_receive_test_with_usb_com$ADDR$0$0 == 0xdf05
+                    DF05    607 _ADDR	=	0xdf05
+                    DF06    608 Fradio_receive_test_with_usb_com$CHANNR$0$0 == 0xdf06
+                    DF06    609 _CHANNR	=	0xdf06
+                    DF07    610 Fradio_receive_test_with_usb_com$FSCTRL1$0$0 == 0xdf07
+                    DF07    611 _FSCTRL1	=	0xdf07
+                    DF08    612 Fradio_receive_test_with_usb_com$FSCTRL0$0$0 == 0xdf08
+                    DF08    613 _FSCTRL0	=	0xdf08
+                    DF09    614 Fradio_receive_test_with_usb_com$FREQ2$0$0 == 0xdf09
+                    DF09    615 _FREQ2	=	0xdf09
+                    DF0A    616 Fradio_receive_test_with_usb_com$FREQ1$0$0 == 0xdf0a
+                    DF0A    617 _FREQ1	=	0xdf0a
+                    DF0B    618 Fradio_receive_test_with_usb_com$FREQ0$0$0 == 0xdf0b
+                    DF0B    619 _FREQ0	=	0xdf0b
+                    DF0C    620 Fradio_receive_test_with_usb_com$MDMCFG4$0$0 == 0xdf0c
+                    DF0C    621 _MDMCFG4	=	0xdf0c
+                    DF0D    622 Fradio_receive_test_with_usb_com$MDMCFG3$0$0 == 0xdf0d
+                    DF0D    623 _MDMCFG3	=	0xdf0d
+                    DF0E    624 Fradio_receive_test_with_usb_com$MDMCFG2$0$0 == 0xdf0e
+                    DF0E    625 _MDMCFG2	=	0xdf0e
+                    DF0F    626 Fradio_receive_test_with_usb_com$MDMCFG1$0$0 == 0xdf0f
+                    DF0F    627 _MDMCFG1	=	0xdf0f
+                    DF10    628 Fradio_receive_test_with_usb_com$MDMCFG0$0$0 == 0xdf10
+                    DF10    629 _MDMCFG0	=	0xdf10
+                    DF11    630 Fradio_receive_test_with_usb_com$DEVIATN$0$0 == 0xdf11
+                    DF11    631 _DEVIATN	=	0xdf11
+                    DF12    632 Fradio_receive_test_with_usb_com$MCSM2$0$0 == 0xdf12
+                    DF12    633 _MCSM2	=	0xdf12
+                    DF13    634 Fradio_receive_test_with_usb_com$MCSM1$0$0 == 0xdf13
+                    DF13    635 _MCSM1	=	0xdf13
+                    DF14    636 Fradio_receive_test_with_usb_com$MCSM0$0$0 == 0xdf14
+                    DF14    637 _MCSM0	=	0xdf14
+                    DF15    638 Fradio_receive_test_with_usb_com$FOCCFG$0$0 == 0xdf15
+                    DF15    639 _FOCCFG	=	0xdf15
+                    DF16    640 Fradio_receive_test_with_usb_com$BSCFG$0$0 == 0xdf16
+                    DF16    641 _BSCFG	=	0xdf16
+                    DF17    642 Fradio_receive_test_with_usb_com$AGCCTRL2$0$0 == 0xdf17
+                    DF17    643 _AGCCTRL2	=	0xdf17
+                    DF18    644 Fradio_receive_test_with_usb_com$AGCCTRL1$0$0 == 0xdf18
+                    DF18    645 _AGCCTRL1	=	0xdf18
+                    DF19    646 Fradio_receive_test_with_usb_com$AGCCTRL0$0$0 == 0xdf19
+                    DF19    647 _AGCCTRL0	=	0xdf19
+                    DF1A    648 Fradio_receive_test_with_usb_com$FREND1$0$0 == 0xdf1a
+                    DF1A    649 _FREND1	=	0xdf1a
+                    DF1B    650 Fradio_receive_test_with_usb_com$FREND0$0$0 == 0xdf1b
+                    DF1B    651 _FREND0	=	0xdf1b
+                    DF1C    652 Fradio_receive_test_with_usb_com$FSCAL3$0$0 == 0xdf1c
+                    DF1C    653 _FSCAL3	=	0xdf1c
+                    DF1D    654 Fradio_receive_test_with_usb_com$FSCAL2$0$0 == 0xdf1d
+                    DF1D    655 _FSCAL2	=	0xdf1d
+                    DF1E    656 Fradio_receive_test_with_usb_com$FSCAL1$0$0 == 0xdf1e
+                    DF1E    657 _FSCAL1	=	0xdf1e
+                    DF1F    658 Fradio_receive_test_with_usb_com$FSCAL0$0$0 == 0xdf1f
+                    DF1F    659 _FSCAL0	=	0xdf1f
+                    DF23    660 Fradio_receive_test_with_usb_com$TEST2$0$0 == 0xdf23
+                    DF23    661 _TEST2	=	0xdf23
+                    DF24    662 Fradio_receive_test_with_usb_com$TEST1$0$0 == 0xdf24
+                    DF24    663 _TEST1	=	0xdf24
+                    DF25    664 Fradio_receive_test_with_usb_com$TEST0$0$0 == 0xdf25
+                    DF25    665 _TEST0	=	0xdf25
+                    DF2E    666 Fradio_receive_test_with_usb_com$PA_TABLE0$0$0 == 0xdf2e
+                    DF2E    667 _PA_TABLE0	=	0xdf2e
+                    DF2F    668 Fradio_receive_test_with_usb_com$IOCFG2$0$0 == 0xdf2f
+                    DF2F    669 _IOCFG2	=	0xdf2f
+                    DF30    670 Fradio_receive_test_with_usb_com$IOCFG1$0$0 == 0xdf30
+                    DF30    671 _IOCFG1	=	0xdf30
+                    DF31    672 Fradio_receive_test_with_usb_com$IOCFG0$0$0 == 0xdf31
+                    DF31    673 _IOCFG0	=	0xdf31
+                    DF36    674 Fradio_receive_test_with_usb_com$PARTNUM$0$0 == 0xdf36
+                    DF36    675 _PARTNUM	=	0xdf36
+                    DF37    676 Fradio_receive_test_with_usb_com$VERSION$0$0 == 0xdf37
+                    DF37    677 _VERSION	=	0xdf37
+                    DF38    678 Fradio_receive_test_with_usb_com$FREQEST$0$0 == 0xdf38
+                    DF38    679 _FREQEST	=	0xdf38
+                    DF39    680 Fradio_receive_test_with_usb_com$LQI$0$0 == 0xdf39
+                    DF39    681 _LQI	=	0xdf39
+                    DF3A    682 Fradio_receive_test_with_usb_com$RSSI$0$0 == 0xdf3a
+                    DF3A    683 _RSSI	=	0xdf3a
+                    DF3B    684 Fradio_receive_test_with_usb_com$MARCSTATE$0$0 == 0xdf3b
+                    DF3B    685 _MARCSTATE	=	0xdf3b
+                    DF3C    686 Fradio_receive_test_with_usb_com$PKTSTATUS$0$0 == 0xdf3c
+                    DF3C    687 _PKTSTATUS	=	0xdf3c
+                    DF3D    688 Fradio_receive_test_with_usb_com$VCO_VC_DAC$0$0 == 0xdf3d
+                    DF3D    689 _VCO_VC_DAC	=	0xdf3d
+                    DF40    690 Fradio_receive_test_with_usb_com$I2SCFG0$0$0 == 0xdf40
+                    DF40    691 _I2SCFG0	=	0xdf40
+                    DF41    692 Fradio_receive_test_with_usb_com$I2SCFG1$0$0 == 0xdf41
+                    DF41    693 _I2SCFG1	=	0xdf41
+                    DF42    694 Fradio_receive_test_with_usb_com$I2SDATL$0$0 == 0xdf42
+                    DF42    695 _I2SDATL	=	0xdf42
+                    DF43    696 Fradio_receive_test_with_usb_com$I2SDATH$0$0 == 0xdf43
+                    DF43    697 _I2SDATH	=	0xdf43
+                    DF44    698 Fradio_receive_test_with_usb_com$I2SWCNT$0$0 == 0xdf44
+                    DF44    699 _I2SWCNT	=	0xdf44
+                    DF45    700 Fradio_receive_test_with_usb_com$I2SSTAT$0$0 == 0xdf45
+                    DF45    701 _I2SSTAT	=	0xdf45
+                    DF46    702 Fradio_receive_test_with_usb_com$I2SCLKF0$0$0 == 0xdf46
+                    DF46    703 _I2SCLKF0	=	0xdf46
+                    DF47    704 Fradio_receive_test_with_usb_com$I2SCLKF1$0$0 == 0xdf47
+                    DF47    705 _I2SCLKF1	=	0xdf47
+                    DF48    706 Fradio_receive_test_with_usb_com$I2SCLKF2$0$0 == 0xdf48
+                    DF48    707 _I2SCLKF2	=	0xdf48
+                    DE00    708 Fradio_receive_test_with_usb_com$USBADDR$0$0 == 0xde00
+                    DE00    709 _USBADDR	=	0xde00
+                    DE01    710 Fradio_receive_test_with_usb_com$USBPOW$0$0 == 0xde01
+                    DE01    711 _USBPOW	=	0xde01
+                    DE02    712 Fradio_receive_test_with_usb_com$USBIIF$0$0 == 0xde02
+                    DE02    713 _USBIIF	=	0xde02
+                    DE04    714 Fradio_receive_test_with_usb_com$USBOIF$0$0 == 0xde04
+                    DE04    715 _USBOIF	=	0xde04
+                    DE06    716 Fradio_receive_test_with_usb_com$USBCIF$0$0 == 0xde06
+                    DE06    717 _USBCIF	=	0xde06
+                    DE07    718 Fradio_receive_test_with_usb_com$USBIIE$0$0 == 0xde07
+                    DE07    719 _USBIIE	=	0xde07
+                    DE09    720 Fradio_receive_test_with_usb_com$USBOIE$0$0 == 0xde09
+                    DE09    721 _USBOIE	=	0xde09
+                    DE0B    722 Fradio_receive_test_with_usb_com$USBCIE$0$0 == 0xde0b
+                    DE0B    723 _USBCIE	=	0xde0b
+                    DE0C    724 Fradio_receive_test_with_usb_com$USBFRML$0$0 == 0xde0c
+                    DE0C    725 _USBFRML	=	0xde0c
+                    DE0D    726 Fradio_receive_test_with_usb_com$USBFRMH$0$0 == 0xde0d
+                    DE0D    727 _USBFRMH	=	0xde0d
+                    DE0E    728 Fradio_receive_test_with_usb_com$USBINDEX$0$0 == 0xde0e
+                    DE0E    729 _USBINDEX	=	0xde0e
+                    DE10    730 Fradio_receive_test_with_usb_com$USBMAXI$0$0 == 0xde10
+                    DE10    731 _USBMAXI	=	0xde10
+                    DE11    732 Fradio_receive_test_with_usb_com$USBCSIL$0$0 == 0xde11
+                    DE11    733 _USBCSIL	=	0xde11
+                    DE12    734 Fradio_receive_test_with_usb_com$USBCSIH$0$0 == 0xde12
+                    DE12    735 _USBCSIH	=	0xde12
+                    DE13    736 Fradio_receive_test_with_usb_com$USBMAXO$0$0 == 0xde13
+                    DE13    737 _USBMAXO	=	0xde13
+                    DE14    738 Fradio_receive_test_with_usb_com$USBCSOL$0$0 == 0xde14
+                    DE14    739 _USBCSOL	=	0xde14
+                    DE15    740 Fradio_receive_test_with_usb_com$USBCSOH$0$0 == 0xde15
+                    DE15    741 _USBCSOH	=	0xde15
+                    DE16    742 Fradio_receive_test_with_usb_com$USBCNTL$0$0 == 0xde16
+                    DE16    743 _USBCNTL	=	0xde16
+                    DE17    744 Fradio_receive_test_with_usb_com$USBCNTH$0$0 == 0xde17
+                    DE17    745 _USBCNTH	=	0xde17
+                    DE20    746 Fradio_receive_test_with_usb_com$USBF0$0$0 == 0xde20
+                    DE20    747 _USBF0	=	0xde20
+                    DE22    748 Fradio_receive_test_with_usb_com$USBF1$0$0 == 0xde22
+                    DE22    749 _USBF1	=	0xde22
+                    DE24    750 Fradio_receive_test_with_usb_com$USBF2$0$0 == 0xde24
+                    DE24    751 _USBF2	=	0xde24
+                    DE26    752 Fradio_receive_test_with_usb_com$USBF3$0$0 == 0xde26
+                    DE26    753 _USBF3	=	0xde26
+                    DE28    754 Fradio_receive_test_with_usb_com$USBF4$0$0 == 0xde28
+                    DE28    755 _USBF4	=	0xde28
+                    DE2A    756 Fradio_receive_test_with_usb_com$USBF5$0$0 == 0xde2a
+                    DE2A    757 _USBF5	=	0xde2a
+                    0000    758 G$response$0$0==.
+   0000                     759 _response::
+   0000                     760 	.ds 32
+                            761 ;--------------------------------------------------------
+                            762 ; absolute external ram data
+                            763 ;--------------------------------------------------------
+                            764 	.area XABS    (ABS,XDATA)
+                            765 ;--------------------------------------------------------
+                            766 ; external initialized ram data
+                            767 ;--------------------------------------------------------
+                            768 	.area XISEG   (XDATA)
+                            769 	.area HOME    (CODE)
+                            770 	.area GSINIT0 (CODE)
+                            771 	.area GSINIT1 (CODE)
+                            772 	.area GSINIT2 (CODE)
+                            773 	.area GSINIT3 (CODE)
+                            774 	.area GSINIT4 (CODE)
+                            775 	.area GSINIT5 (CODE)
+                            776 	.area GSINIT  (CODE)
+                            777 	.area GSFINAL (CODE)
+                            778 	.area CSEG    (CODE)
+                            779 ;--------------------------------------------------------
+                            780 ; interrupt vector 
+                            781 ;--------------------------------------------------------
+                            782 	.area HOME    (CODE)
+   0000                     783 __interrupt_vect:
+   0000 02s00r00            784 	ljmp	__sdcc_gsinit_startup
+   0003 32                  785 	reti
+   0004                     786 	.ds	7
+   000B 32                  787 	reti
+   000C                     788 	.ds	7
+   0013 32                  789 	reti
+   0014                     790 	.ds	7
+   001B 32                  791 	reti
+   001C                     792 	.ds	7
+   0023 32                  793 	reti
+   0024                     794 	.ds	7
+   002B 32                  795 	reti
+   002C                     796 	.ds	7
+   0033 32                  797 	reti
+   0034                     798 	.ds	7
+   003B 32                  799 	reti
+   003C                     800 	.ds	7
+   0043 32                  801 	reti
+   0044                     802 	.ds	7
+   004B 32                  803 	reti
+   004C                     804 	.ds	7
+   0053 32                  805 	reti
+   0054                     806 	.ds	7
+   005B 32                  807 	reti
+   005C                     808 	.ds	7
+   0063 02s00r00            809 	ljmp	_ISR_T4
+   0066                     810 	.ds	5
+   006B 32                  811 	reti
+   006C                     812 	.ds	7
+   0073 32                  813 	reti
+   0074                     814 	.ds	7
+   007B 32                  815 	reti
+   007C                     816 	.ds	7
+   0083 02s00r00            817 	ljmp	_ISR_RF
+                            818 ;--------------------------------------------------------
+                            819 ; global & static initialisations
+                            820 ;--------------------------------------------------------
+                            821 	.area HOME    (CODE)
+                            822 	.area GSINIT  (CODE)
+                            823 	.area GSFINAL (CODE)
+                            824 	.area GSINIT  (CODE)
+                            825 	.globl __sdcc_gsinit_startup
+                            826 	.globl __sdcc_program_startup
+                            827 	.globl __start__stack
+                            828 	.globl __mcs51_genXINIT
+                            829 	.globl __mcs51_genXRAMCLEAR
+                            830 	.globl __mcs51_genRAMCLEAR
+                    0000    831 	G$main$0$0 ==.
+                    0000    832 	C$radio_receive_test_with_usb_com.c$48$1$1 ==.
+                            833 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:48: BIT yellowLedOn = 0;
+   0000 C2*00               834 	clr	_yellowLedOn
+                    0002    835 	G$main$0$0 ==.
+                    0002    836 	C$radio_receive_test_with_usb_com.c$51$1$1 ==.
+                            837 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:51: BIT serialProtocolError = 0;
+   0002 C2*01               838 	clr	_serialProtocolError
+                    0004    839 	G$main$0$0 ==.
+                    0004    840 	C$radio_receive_test_with_usb_com.c$62$1$1 ==.
+                            841 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:62: uint8 dataBytesLeft = 0;
+   0004 78r21               842 	mov	r0,#_dataBytesLeft
+   0006 E4                  843 	clr	a
+   0007 F2                  844 	movx	@r0,a
+                    0008    845 	G$main$0$0 ==.
+                    0008    846 	C$radio_receive_test_with_usb_com.c$75$1$1 ==.
+                            847 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:75: uint16 lostPacketCount = 0;
+   0008 78r23               848 	mov	r0,#_lostPacketCount
+   000A E4                  849 	clr	a
+   000B F2                  850 	movx	@r0,a
+   000C 08                  851 	inc	r0
+   000D F2                  852 	movx	@r0,a
+                    000E    853 	G$main$0$0 ==.
+                    000E    854 	C$radio_receive_test_with_usb_com.c$76$1$1 ==.
+                            855 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:76: int16 lastPacketId = -1;
+   000E 78r25               856 	mov	r0,#_lastPacketId
+   0010 74 FF               857 	mov	a,#0xFF
+   0012 F2                  858 	movx	@r0,a
+   0013 08                  859 	inc	r0
+   0014 74 FF               860 	mov	a,#0xFF
+   0016 F2                  861 	movx	@r0,a
+                    0017    862 	G$main$0$0 ==.
+                    0017    863 	C$radio_receive_test_with_usb_com.c$77$1$1 ==.
+                            864 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:77: int8 receivingPackets = 0;
+   0017 78r27               865 	mov	r0,#_receivingPackets
+   0019 E4                  866 	clr	a
+   001A F2                  867 	movx	@r0,a
+                    001B    868 	G$main$0$0 ==.
+                    001B    869 	C$radio_receive_test_with_usb_com.c$78$1$1 ==.
+                            870 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:78: uint32 lastTx = 0;
+   001B 78r28               871 	mov	r0,#_lastTx
+   001D E4                  872 	clr	a
+   001E F2                  873 	movx	@r0,a
+   001F 08                  874 	inc	r0
+   0020 F2                  875 	movx	@r0,a
+   0021 08                  876 	inc	r0
+   0022 F2                  877 	movx	@r0,a
+   0023 08                  878 	inc	r0
+   0024 F2                  879 	movx	@r0,a
+                            880 	.area GSFINAL (CODE)
+   0000 02s00r86            881 	ljmp	__sdcc_program_startup
+                            882 ;--------------------------------------------------------
+                            883 ; Home
+                            884 ;--------------------------------------------------------
+                            885 	.area HOME    (CODE)
+                            886 	.area HOME    (CODE)
+   0086                     887 __sdcc_program_startup:
+   0086 12s02r91            888 	lcall	_main
+                            889 ;	return from main will lock up
+   0089 80 FE               890 	sjmp .
+                            891 ;--------------------------------------------------------
+                            892 ; code
+                            893 ;--------------------------------------------------------
+                            894 	.area CSEG    (CODE)
+                            895 ;------------------------------------------------------------
+                            896 ;Allocation info for local variables in function 'updateLeds'
+                            897 ;------------------------------------------------------------
+                    0000    898 	G$updateLeds$0$0 ==.
+                    0000    899 	C$radio_receive_test_with_usb_com.c$82$0$0 ==.
+                            900 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:82: void updateLeds()
+                            901 ;	-----------------------------------------
+                            902 ;	 function updateLeds
+                            903 ;	-----------------------------------------
+   0000                     904 _updateLeds:
+                    0007    905 	ar7 = 0x07
+                    0006    906 	ar6 = 0x06
+                    0005    907 	ar5 = 0x05
+                    0004    908 	ar4 = 0x04
+                    0003    909 	ar3 = 0x03
+                    0002    910 	ar2 = 0x02
+                    0001    911 	ar1 = 0x01
+                    0000    912 	ar0 = 0x00
+                    0000    913 	C$radio_receive_test_with_usb_com.c$84$1$1 ==.
+                            914 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:84: usbShowStatusWithGreenLed();
+   0000 12s00r00            915 	lcall	_usbShowStatusWithGreenLed
+                    0003    916 	C$radio_receive_test_with_usb_com.c$85$2$2 ==.
+                            917 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:85: LED_YELLOW(yellowLedOn);
+   0003 30*00 05            918 	jnb	_yellowLedOn,00103$
+   0006 43 FF 04            919 	orl	_P2DIR,#0x04
+   0009 80 07               920 	sjmp	00104$
+   000B                     921 00103$:
+   000B AF FF               922 	mov	r7,_P2DIR
+   000D 53 07 FB            923 	anl	ar7,#0xFB
+   0010 8F FF               924 	mov	_P2DIR,r7
+   0012                     925 00104$:
+                    0012    926 	C$radio_receive_test_with_usb_com.c$86$2$3 ==.
+                            927 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:86: LED_RED(serialProtocolError);
+   0012 30*01 05            928 	jnb	_serialProtocolError,00105$
+   0015 43 FF 02            929 	orl	_P2DIR,#0x02
+   0018 80 07               930 	sjmp	00101$
+   001A                     931 00105$:
+   001A AF FF               932 	mov	r7,_P2DIR
+   001C 53 07 FD            933 	anl	ar7,#0xFD
+   001F 8F FF               934 	mov	_P2DIR,r7
+   0021                     935 00101$:
+                    0021    936 	C$radio_receive_test_with_usb_com.c$87$2$3 ==.
+                    0021    937 	XG$updateLeds$0$0 ==.
+   0021 22                  938 	ret
+                            939 ;------------------------------------------------------------
+                            940 ;Allocation info for local variables in function 'executeCommand'
+                            941 ;------------------------------------------------------------
+                    0022    942 	G$executeCommand$0$0 ==.
+                    0022    943 	C$radio_receive_test_with_usb_com.c$89$2$3 ==.
+                            944 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:89: void executeCommand()
+                            945 ;	-----------------------------------------
+                            946 ;	 function executeCommand
+                            947 ;	-----------------------------------------
+   0022                     948 _executeCommand:
+                    0022    949 	C$radio_receive_test_with_usb_com.c$91$1$1 ==.
+                            950 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:91: switch(commandByte)
+   0022 78r00               951 	mov	r0,#_commandByte
+   0024 E2                  952 	movx	a,@r0
+   0025 B4 81 02            953 	cjne	a,#0x81,00108$
+   0028 80 08               954 	sjmp	00101$
+   002A                     955 00108$:
+   002A 78r00               956 	mov	r0,#_commandByte
+   002C E2                  957 	movx	a,@r0
+                    002D    958 	C$radio_receive_test_with_usb_com.c$93$2$2 ==.
+                            959 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:93: case COMMAND_TOGGLE_YELLOW_LED:
+   002D B4 84 11            960 	cjne	a,#0x84,00104$
+   0030 80 0D               961 	sjmp	00102$
+   0032                     962 00101$:
+                    0032    963 	C$radio_receive_test_with_usb_com.c$94$2$2 ==.
+                            964 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:94: yellowLedOn ^= 1;
+   0032 A2*00               965 	mov	c,_yellowLedOn
+   0034 E4                  966 	clr	a
+   0035 33                  967 	rlc	a
+   0036 64 01               968 	xrl	a,#0x01
+   0038 FF                  969 	mov	r7,a
+   0039 24 FF               970 	add	a,#0xff
+   003B 92*00               971 	mov	_yellowLedOn,c
+                    003D    972 	C$radio_receive_test_with_usb_com.c$95$2$2 ==.
+                            973 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:95: break;
+                    003D    974 	C$radio_receive_test_with_usb_com.c$97$2$2 ==.
+                            975 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:97: case COMMAND_CLEAR_ERROR:
+   003D 80 02               976 	sjmp	00104$
+   003F                     977 00102$:
+                    003F    978 	C$radio_receive_test_with_usb_com.c$98$2$2 ==.
+                            979 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:98: serialProtocolError = 0;
+   003F C2*01               980 	clr	_serialProtocolError
+                    0041    981 	C$radio_receive_test_with_usb_com.c$100$1$1 ==.
+                            982 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:100: }
+   0041                     983 00104$:
+                    0041    984 	C$radio_receive_test_with_usb_com.c$101$1$1 ==.
+                    0041    985 	XG$executeCommand$0$0 ==.
+   0041 22                  986 	ret
+                            987 ;------------------------------------------------------------
+                            988 ;Allocation info for local variables in function 'processByte'
+                            989 ;------------------------------------------------------------
+                    0042    990 	G$processByte$0$0 ==.
+                    0042    991 	C$radio_receive_test_with_usb_com.c$117$1$1 ==.
+                            992 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:117: void processByte(uint8 byteReceived)
+                            993 ;	-----------------------------------------
+                            994 ;	 function processByte
+                            995 ;	-----------------------------------------
+   0042                     996 _processByte:
+                    0042    997 	C$radio_receive_test_with_usb_com.c$119$1$1 ==.
+                            998 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:119: if (byteReceived & 0x80)
+   0042 E5 82               999 	mov	a,dpl
+   0044 FF                 1000 	mov	r7,a
+   0045 30 E7 2C           1001 	jnb	acc.7,00119$
+                    0048   1002 	C$radio_receive_test_with_usb_com.c$123$2$2 ==.
+                           1003 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:123: if (dataBytesLeft > 0)
+   0048 78r21              1004 	mov	r0,#_dataBytesLeft
+   004A E2                 1005 	movx	a,@r0
+   004B 60 02              1006 	jz	00102$
+                    004D   1007 	C$radio_receive_test_with_usb_com.c$125$3$3 ==.
+                           1008 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:125: serialProtocolError = 1;
+   004D D2*01              1009 	setb	_serialProtocolError
+   004F                    1010 00102$:
+                    004F   1011 	C$radio_receive_test_with_usb_com.c$128$2$2 ==.
+                           1012 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:128: commandByte = byteReceived;
+   004F 78r00              1013 	mov	r0,#_commandByte
+   0051 EF                 1014 	mov	a,r7
+   0052 F2                 1015 	movx	@r0,a
+                    0053   1016 	C$radio_receive_test_with_usb_com.c$129$2$2 ==.
+                           1017 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:129: dataBytesReceived = 0;
+   0053 78r22              1018 	mov	r0,#_dataBytesReceived
+   0055 E4                 1019 	clr	a
+   0056 F2                 1020 	movx	@r0,a
+                    0057   1021 	C$radio_receive_test_with_usb_com.c$130$2$2 ==.
+                           1022 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:130: dataBytesLeft = 0;
+   0057 78r21              1023 	mov	r0,#_dataBytesLeft
+   0059 E4                 1024 	clr	a
+   005A F2                 1025 	movx	@r0,a
+                    005B   1026 	C$radio_receive_test_with_usb_com.c$134$2$2 ==.
+                           1027 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:134: switch(commandByte)
+   005B BF 81 02           1028 	cjne	r7,#0x81,00134$
+   005E 80 03              1029 	sjmp	00104$
+   0060                    1030 00134$:
+   0060 BF 84 06           1031 	cjne	r7,#0x84,00105$
+                    0063   1032 	C$radio_receive_test_with_usb_com.c$137$3$4 ==.
+                           1033 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:137: case COMMAND_CLEAR_ERROR:
+   0063                    1034 00104$:
+                    0063   1035 	C$radio_receive_test_with_usb_com.c$138$3$4 ==.
+                           1036 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:138: dataBytesLeft = 0;
+   0063 78r21              1037 	mov	r0,#_dataBytesLeft
+   0065 E4                 1038 	clr	a
+   0066 F2                 1039 	movx	@r0,a
+                    0067   1040 	C$radio_receive_test_with_usb_com.c$139$3$4 ==.
+                           1041 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:139: break;
+                    0067   1042 	C$radio_receive_test_with_usb_com.c$141$3$4 ==.
+                           1043 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:141: default:
+   0067 80 05              1044 	sjmp	00106$
+   0069                    1045 00105$:
+                    0069   1046 	C$radio_receive_test_with_usb_com.c$143$3$4 ==.
+                           1047 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:143: serialProtocolError = 1;
+   0069 D2*01              1048 	setb	_serialProtocolError
+                    006B   1049 	C$radio_receive_test_with_usb_com.c$144$3$4 ==.
+                           1050 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:144: return;
+   006B 02s01r03           1051 	ljmp	00121$
+                    006E   1052 	C$radio_receive_test_with_usb_com.c$145$2$2 ==.
+                           1053 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:145: }
+   006E                    1054 00106$:
+                    006E   1055 	C$radio_receive_test_with_usb_com.c$150$3$5 ==.
+                           1056 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:150: executeCommand();
+   006E 12s00r22           1057 	lcall	_executeCommand
+   0071 02s01r03           1058 	ljmp	00121$
+   0074                    1059 00119$:
+                    0074   1060 	C$radio_receive_test_with_usb_com.c$153$1$1 ==.
+                           1061 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:153: else if (dataBytesLeft > 0)
+   0074 78r21              1062 	mov	r0,#_dataBytesLeft
+   0076 E2                 1063 	movx	a,@r0
+   0077 60 20              1064 	jz	00116$
+                    0079   1065 	C$radio_receive_test_with_usb_com.c$157$2$6 ==.
+                           1066 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:157: dataBytes[dataBytesReceived] = byteReceived;
+   0079 78r22              1067 	mov	r0,#_dataBytesReceived
+   007B E2                 1068 	movx	a,@r0
+   007C 24r01              1069 	add	a,#_dataBytes
+   007E F8                 1070 	mov	r0,a
+   007F EF                 1071 	mov	a,r7
+   0080 F2                 1072 	movx	@r0,a
+                    0081   1073 	C$radio_receive_test_with_usb_com.c$158$2$6 ==.
+                           1074 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:158: dataBytesLeft--;
+   0081 78r21              1075 	mov	r0,#_dataBytesLeft
+   0083 E2                 1076 	movx	a,@r0
+   0084 14                 1077 	dec	a
+   0085 F2                 1078 	movx	@r0,a
+                    0086   1079 	C$radio_receive_test_with_usb_com.c$159$2$6 ==.
+                           1080 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:159: dataBytesReceived++;
+   0086 78r22              1081 	mov	r0,#_dataBytesReceived
+   0088 E2                 1082 	movx	a,@r0
+   0089 24 01              1083 	add	a,#0x01
+   008B F2                 1084 	movx	@r0,a
+                    008C   1085 	C$radio_receive_test_with_usb_com.c$161$2$6 ==.
+                           1086 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:161: if (dataBytesLeft==0)
+   008C 78r21              1087 	mov	r0,#_dataBytesLeft
+   008E E2                 1088 	movx	a,@r0
+   008F 60 03              1089 	jz	00138$
+   0091 02s01r03           1090 	ljmp	00121$
+   0094                    1091 00138$:
+                    0094   1092 	C$radio_receive_test_with_usb_com.c$164$3$7 ==.
+                           1093 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:164: executeCommand();
+   0094 12s00r22           1094 	lcall	_executeCommand
+   0097 80 6A              1095 	sjmp	00121$
+   0099                    1096 00116$:
+                    0099   1097 	C$radio_receive_test_with_usb_com.c$174$2$8 ==.
+                           1098 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:174: switch(byteReceived)
+   0099 BF 63 02           1099 	cjne	r7,#0x63,00139$
+   009C 80 5F              1100 	sjmp	00113$
+   009E                    1101 00139$:
+   009E BF 74 02           1102 	cjne	r7,#0x74,00140$
+   00A1 80 05              1103 	sjmp	00111$
+   00A3                    1104 00140$:
+                    00A3   1105 	C$radio_receive_test_with_usb_com.c$176$3$9 ==.
+                           1106 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:176: case 't':
+   00A3 BF 79 5D           1107 	cjne	r7,#0x79,00121$
+   00A6 80 48              1108 	sjmp	00112$
+   00A8                    1109 00111$:
+                    00A8   1110 	C$radio_receive_test_with_usb_com.c$177$3$9 ==.
+                           1111 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:177: time = getMs();
+   00A8 12s00r00           1112 	lcall	_getMs
+   00AB AC 82              1113 	mov	r4,dpl
+   00AD AD 83              1114 	mov	r5,dph
+   00AF AE F0              1115 	mov	r6,b
+   00B1 FF                 1116 	mov	r7,a
+                    00B2   1117 	C$radio_receive_test_with_usb_com.c$180$3$9 ==.
+                           1118 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:180: responseLength = sprintf(response, "time=0x%04x%04x\r\n", (uint16)(time >> 16), (uint16)time);
+   00B2 8C 02              1119 	mov	ar2,r4
+   00B4 8D 03              1120 	mov	ar3,r5
+   00B6 8E 04              1121 	mov	ar4,r6
+   00B8 8F 05              1122 	mov	ar5,r7
+   00BA C0 02              1123 	push	ar2
+   00BC C0 03              1124 	push	ar3
+   00BE C0 04              1125 	push	ar4
+   00C0 C0 05              1126 	push	ar5
+   00C2 74r00              1127 	mov	a,#__str_0
+   00C4 C0 E0              1128 	push	acc
+   00C6 74s00              1129 	mov	a,#(__str_0 >> 8)
+   00C8 C0 E0              1130 	push	acc
+   00CA 74 80              1131 	mov	a,#0x80
+   00CC C0 E0              1132 	push	acc
+   00CE 74r00              1133 	mov	a,#_response
+   00D0 C0 E0              1134 	push	acc
+   00D2 74s00              1135 	mov	a,#(_response >> 8)
+   00D4 C0 E0              1136 	push	acc
+   00D6 E4                 1137 	clr	a
+   00D7 C0 E0              1138 	push	acc
+   00D9 12s00r00           1139 	lcall	_sprintf
+   00DC AE 82              1140 	mov	r6,dpl
+   00DE E5 81              1141 	mov	a,sp
+   00E0 24 F6              1142 	add	a,#0xf6
+   00E2 F5 81              1143 	mov	sp,a
+   00E4 78r00              1144 	mov	r0,#_usbComTxSend_PARM_2
+   00E6 EE                 1145 	mov	a,r6
+   00E7 F2                 1146 	movx	@r0,a
+                    00E8   1147 	C$radio_receive_test_with_usb_com.c$181$3$9 ==.
+                           1148 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:181: usbComTxSend(response, responseLength);
+   00E8 90s00r00           1149 	mov	dptr,#_response
+   00EB 12s00r00           1150 	lcall	_usbComTxSend
+                    00EE   1151 	C$radio_receive_test_with_usb_com.c$182$3$9 ==.
+                           1152 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:182: break;
+                    00EE   1153 	C$radio_receive_test_with_usb_com.c$184$3$9 ==.
+                           1154 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:184: case 'y':
+   00EE 80 13              1155 	sjmp	00121$
+   00F0                    1156 00112$:
+                    00F0   1157 	C$radio_receive_test_with_usb_com.c$185$3$9 ==.
+                           1158 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:185: yellowLedOn ^= 1;
+   00F0 A2*00              1159 	mov	c,_yellowLedOn
+   00F2 E4                 1160 	clr	a
+   00F3 33                 1161 	rlc	a
+   00F4 64 01              1162 	xrl	a,#0x01
+   00F6 FF                 1163 	mov	r7,a
+   00F7 24 FF              1164 	add	a,#0xff
+   00F9 92*00              1165 	mov	_yellowLedOn,c
+                    00FB   1166 	C$radio_receive_test_with_usb_com.c$186$3$9 ==.
+                           1167 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:186: break;
+                    00FB   1168 	C$radio_receive_test_with_usb_com.c$187$3$9 ==.
+                           1169 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:187: case 'c':
+   00FB 80 06              1170 	sjmp	00121$
+   00FD                    1171 00113$:
+                    00FD   1172 	C$radio_receive_test_with_usb_com.c$188$3$9 ==.
+                           1173 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:188: radioQueueChangeChannel(228);
+   00FD 75 82 E4           1174 	mov	dpl,#0xE4
+   0100 12s00r00           1175 	lcall	_radioQueueChangeChannel
+                    0103   1176 	C$radio_receive_test_with_usb_com.c$190$1$1 ==.
+                           1177 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:190: }
+   0103                    1178 00121$:
+                    0103   1179 	C$radio_receive_test_with_usb_com.c$192$1$1 ==.
+                    0103   1180 	XG$processByte$0$0 ==.
+   0103 22                 1181 	ret
+                           1182 ;------------------------------------------------------------
+                           1183 ;Allocation info for local variables in function 'processBytesFromUsb'
+                           1184 ;------------------------------------------------------------
+                    0104   1185 	G$processBytesFromUsb$0$0 ==.
+                    0104   1186 	C$radio_receive_test_with_usb_com.c$196$1$1 ==.
+                           1187 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:196: void processBytesFromUsb()
+                           1188 ;	-----------------------------------------
+                           1189 ;	 function processBytesFromUsb
+                           1190 ;	-----------------------------------------
+   0104                    1191 _processBytesFromUsb:
+                    0104   1192 	C$radio_receive_test_with_usb_com.c$198$1$1 ==.
+                           1193 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:198: uint8 bytesLeft = usbComRxAvailable();
+   0104 12s00r00           1194 	lcall	_usbComRxAvailable
+   0107 AF 82              1195 	mov	r7,dpl
+                    0109   1196 	C$radio_receive_test_with_usb_com.c$199$1$1 ==.
+                           1197 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:199: while(bytesLeft && usbComTxAvailable() >= sizeof(response))
+   0109                    1198 00102$:
+   0109 EF                 1199 	mov	a,r7
+   010A 60 1B              1200 	jz	00105$
+   010C C0 07              1201 	push	ar7
+   010E 12s00r00           1202 	lcall	_usbComTxAvailable
+   0111 AE 82              1203 	mov	r6,dpl
+   0113 D0 07              1204 	pop	ar7
+   0115 BE 20 00           1205 	cjne	r6,#0x20,00112$
+   0118                    1206 00112$:
+   0118 40 0D              1207 	jc	00105$
+                    011A   1208 	C$radio_receive_test_with_usb_com.c$201$2$2 ==.
+                           1209 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:201: processByte(usbComRxReceiveByte());
+   011A C0 07              1210 	push	ar7
+   011C 12s00r00           1211 	lcall	_usbComRxReceiveByte
+   011F 12s00r42           1212 	lcall	_processByte
+   0122 D0 07              1213 	pop	ar7
+                    0124   1214 	C$radio_receive_test_with_usb_com.c$202$2$2 ==.
+                           1215 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:202: bytesLeft--;
+   0124 1F                 1216 	dec	r7
+   0125 80 E2              1217 	sjmp	00102$
+   0127                    1218 00105$:
+                    0127   1219 	C$radio_receive_test_with_usb_com.c$204$1$1 ==.
+                    0127   1220 	XG$processBytesFromUsb$0$0 ==.
+   0127 22                 1221 	ret
+                           1222 ;------------------------------------------------------------
+                           1223 ;Allocation info for local variables in function 'receivePackets'
+                           1224 ;------------------------------------------------------------
+                    0128   1225 	G$receivePackets$0$0 ==.
+                    0128   1226 	C$radio_receive_test_with_usb_com.c$206$1$1 ==.
+                           1227 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:206: void receivePackets()
+                           1228 ;	-----------------------------------------
+                           1229 ;	 function receivePackets
+                           1230 ;	-----------------------------------------
+   0128                    1231 _receivePackets:
+                    0128   1232 	C$radio_receive_test_with_usb_com.c$213$1$1 ==.
+                           1233 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:213: if(receivingPackets == 1)
+   0128 78r27              1234 	mov	r0,#_receivingPackets
+   012A E2                 1235 	movx	a,@r0
+   012B B4 01 45           1236 	cjne	a,#0x01,00104$
+                    012E   1237 	C$radio_receive_test_with_usb_com.c$215$2$2 ==.
+                           1238 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:215: if((getMs() - lastTx) > TX_INTERVAL)
+   012E 12s00r00           1239 	lcall	_getMs
+   0131 AC 82              1240 	mov	r4,dpl
+   0133 AD 83              1241 	mov	r5,dph
+   0135 AE F0              1242 	mov	r6,b
+   0137 FF                 1243 	mov	r7,a
+   0138 78r28              1244 	mov	r0,#_lastTx
+   013A D3                 1245 	setb	c
+   013B E2                 1246 	movx	a,@r0
+   013C 9C                 1247 	subb	a,r4
+   013D F4                 1248 	cpl	a
+   013E B3                 1249 	cpl	c
+   013F FC                 1250 	mov	r4,a
+   0140 B3                 1251 	cpl	c
+   0141 08                 1252 	inc	r0
+   0142 E2                 1253 	movx	a,@r0
+   0143 9D                 1254 	subb	a,r5
+   0144 F4                 1255 	cpl	a
+   0145 B3                 1256 	cpl	c
+   0146 FD                 1257 	mov	r5,a
+   0147 B3                 1258 	cpl	c
+   0148 08                 1259 	inc	r0
+   0149 E2                 1260 	movx	a,@r0
+   014A 9E                 1261 	subb	a,r6
+   014B F4                 1262 	cpl	a
+   014C B3                 1263 	cpl	c
+   014D FE                 1264 	mov	r6,a
+   014E B3                 1265 	cpl	c
+   014F 08                 1266 	inc	r0
+   0150 E2                 1267 	movx	a,@r0
+   0151 9F                 1268 	subb	a,r7
+   0152 F4                 1269 	cpl	a
+   0153 FF                 1270 	mov	r7,a
+   0154 C3                 1271 	clr	c
+   0155 74 32              1272 	mov	a,#0x32
+   0157 9C                 1273 	subb	a,r4
+   0158 E4                 1274 	clr	a
+   0159 9D                 1275 	subb	a,r5
+   015A E4                 1276 	clr	a
+   015B 9E                 1277 	subb	a,r6
+   015C E4                 1278 	clr	a
+   015D 9F                 1279 	subb	a,r7
+   015E 50 13              1280 	jnc	00104$
+                    0160   1281 	C$radio_receive_test_with_usb_com.c$217$3$3 ==.
+                           1282 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:217: receivingPackets = 0;
+   0160 78r27              1283 	mov	r0,#_receivingPackets
+   0162 E4                 1284 	clr	a
+   0163 F2                 1285 	movx	@r0,a
+                    0164   1286 	C$radio_receive_test_with_usb_com.c$219$3$3 ==.
+                           1287 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:219: lastPacketId = -1;
+   0164 78r25              1288 	mov	r0,#_lastPacketId
+   0166 74 FF              1289 	mov	a,#0xFF
+   0168 F2                 1290 	movx	@r0,a
+   0169 08                 1291 	inc	r0
+   016A 74 FF              1292 	mov	a,#0xFF
+   016C F2                 1293 	movx	@r0,a
+                    016D   1294 	C$radio_receive_test_with_usb_com.c$226$3$3 ==.
+                           1295 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:226: lostPacketCount = 0;
+   016D 78r23              1296 	mov	r0,#_lostPacketCount
+   016F E4                 1297 	clr	a
+   0170 F2                 1298 	movx	@r0,a
+   0171 08                 1299 	inc	r0
+   0172 F2                 1300 	movx	@r0,a
+   0173                    1301 00104$:
+                    0173   1302 	C$radio_receive_test_with_usb_com.c$230$1$1 ==.
+                           1303 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:230: if (rxBuf = radioQueueRxCurrentPacket())
+   0173 12s00r00           1304 	lcall	_radioQueueRxCurrentPacket
+   0176 AE 82              1305 	mov	r6,dpl
+   0178 AF 83              1306 	mov	r7,dph
+   017A 8E 04              1307 	mov	ar4,r6
+   017C 8F 05              1308 	mov	ar5,r7
+   017E EE                 1309 	mov	a,r6
+   017F 4F                 1310 	orl	a,r7
+   0180 70 03              1311 	jnz	00123$
+   0182 02s02r90           1312 	ljmp	00112$
+   0185                    1313 00123$:
+                    0185   1314 	C$radio_receive_test_with_usb_com.c$232$2$4 ==.
+                           1315 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:232: lastTx = getMs();
+   0185 C0 05              1316 	push	ar5
+   0187 C0 04              1317 	push	ar4
+   0189 12s00r00           1318 	lcall	_getMs
+   018C AA 82              1319 	mov	r2,dpl
+   018E AB 83              1320 	mov	r3,dph
+   0190 AE F0              1321 	mov	r6,b
+   0192 FF                 1322 	mov	r7,a
+   0193 D0 04              1323 	pop	ar4
+   0195 D0 05              1324 	pop	ar5
+   0197 78r28              1325 	mov	r0,#_lastTx
+   0199 EA                 1326 	mov	a,r2
+   019A F2                 1327 	movx	@r0,a
+   019B 08                 1328 	inc	r0
+   019C EB                 1329 	mov	a,r3
+   019D F2                 1330 	movx	@r0,a
+   019E 08                 1331 	inc	r0
+   019F EE                 1332 	mov	a,r6
+   01A0 F2                 1333 	movx	@r0,a
+   01A1 08                 1334 	inc	r0
+   01A2 EF                 1335 	mov	a,r7
+   01A3 F2                 1336 	movx	@r0,a
+                    01A4   1337 	C$radio_receive_test_with_usb_com.c$233$2$4 ==.
+                           1338 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:233: receivingPackets = 1;
+   01A4 78r27              1339 	mov	r0,#_receivingPackets
+   01A6 74 01              1340 	mov	a,#0x01
+   01A8 F2                 1341 	movx	@r0,a
+                    01A9   1342 	C$radio_receive_test_with_usb_com.c$234$2$4 ==.
+                           1343 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:234: msg = (rxBuf[2] << 8) | rxBuf[1];
+   01A9 8C 82              1344 	mov	dpl,r4
+   01AB 8D 83              1345 	mov	dph,r5
+   01AD A3                 1346 	inc	dptr
+   01AE A3                 1347 	inc	dptr
+   01AF E0                 1348 	movx	a,@dptr
+   01B0 FE                 1349 	mov	r6,a
+   01B1 7F 00              1350 	mov	r7,#0x00
+   01B3 8C 82              1351 	mov	dpl,r4
+   01B5 8D 83              1352 	mov	dph,r5
+   01B7 A3                 1353 	inc	dptr
+   01B8 E0                 1354 	movx	a,@dptr
+   01B9 7A 00              1355 	mov	r2,#0x00
+   01BB 42 07              1356 	orl	ar7,a
+   01BD EA                 1357 	mov	a,r2
+   01BE 42 06              1358 	orl	ar6,a
+                    01C0   1359 	C$radio_receive_test_with_usb_com.c$235$2$4 ==.
+                           1360 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:235: time = (rxBuf[3] << 24) | (rxBuf[4] << 16) | (rxBuf[5] << 8) | rxBuf[6];
+   01C0 8C 82              1361 	mov	dpl,r4
+   01C2 8D 83              1362 	mov	dph,r5
+   01C4 A3                 1363 	inc	dptr
+   01C5 A3                 1364 	inc	dptr
+   01C6 A3                 1365 	inc	dptr
+   01C7 A3                 1366 	inc	dptr
+   01C8 A3                 1367 	inc	dptr
+   01C9 E0                 1368 	movx	a,@dptr
+   01CA FA                 1369 	mov	r2,a
+   01CB 7B 00              1370 	mov	r3,#0x00
+   01CD 74 06              1371 	mov	a,#0x06
+   01CF 2C                 1372 	add	a,r4
+   01D0 F5 82              1373 	mov	dpl,a
+   01D2 E4                 1374 	clr	a
+   01D3 3D                 1375 	addc	a,r5
+   01D4 F5 83              1376 	mov	dph,a
+   01D6 E0                 1377 	movx	a,@dptr
+   01D7 7C 00              1378 	mov	r4,#0x00
+   01D9 42 03              1379 	orl	ar3,a
+   01DB EC                 1380 	mov	a,r4
+   01DC 42 02              1381 	orl	ar2,a
+   01DE 78r2C              1382 	mov	r0,#_receivePackets_time_1_1
+   01E0 EB                 1383 	mov	a,r3
+   01E1 F2                 1384 	movx	@r0,a
+   01E2 08                 1385 	inc	r0
+   01E3 EA                 1386 	mov	a,r2
+   01E4 F2                 1387 	movx	@r0,a
+   01E5 EA                 1388 	mov	a,r2
+   01E6 33                 1389 	rlc	a
+   01E7 95 E0              1390 	subb	a,acc
+   01E9 08                 1391 	inc	r0
+   01EA F2                 1392 	movx	@r0,a
+   01EB 08                 1393 	inc	r0
+   01EC F2                 1394 	movx	@r0,a
+                    01ED   1395 	C$radio_receive_test_with_usb_com.c$236$2$4 ==.
+                           1396 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:236: radioQueueRxDoneWithPacket();
+   01ED C0 07              1397 	push	ar7
+   01EF C0 06              1398 	push	ar6
+   01F1 12s00r00           1399 	lcall	_radioQueueRxDoneWithPacket
+   01F4 D0 06              1400 	pop	ar6
+   01F6 D0 07              1401 	pop	ar7
+                    01F8   1402 	C$radio_receive_test_with_usb_com.c$237$2$4 ==.
+                           1403 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:237: if(msg != lastPacketId + 1) 
+   01F8 78r25              1404 	mov	r0,#_lastPacketId
+   01FA E2                 1405 	movx	a,@r0
+   01FB 24 01              1406 	add	a,#0x01
+   01FD FC                 1407 	mov	r4,a
+   01FE 08                 1408 	inc	r0
+   01FF E2                 1409 	movx	a,@r0
+   0200 34 00              1410 	addc	a,#0x00
+   0202 FD                 1411 	mov	r5,a
+   0203 EF                 1412 	mov	a,r7
+   0204 B5 04 06           1413 	cjne	a,ar4,00124$
+   0207 EE                 1414 	mov	a,r6
+   0208 B5 05 02           1415 	cjne	a,ar5,00124$
+   020B 80 0B              1416 	sjmp	00106$
+   020D                    1417 00124$:
+                    020D   1418 	C$radio_receive_test_with_usb_com.c$239$3$5 ==.
+                           1419 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:239: lostPacketCount++;
+   020D 78r23              1420 	mov	r0,#_lostPacketCount
+   020F E2                 1421 	movx	a,@r0
+   0210 24 01              1422 	add	a,#0x01
+   0212 F2                 1423 	movx	@r0,a
+   0213 08                 1424 	inc	r0
+   0214 E2                 1425 	movx	a,@r0
+   0215 34 00              1426 	addc	a,#0x00
+   0217 F2                 1427 	movx	@r0,a
+   0218                    1428 00106$:
+                    0218   1429 	C$radio_receive_test_with_usb_com.c$241$2$4 ==.
+                           1430 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:241: lastPacketId = msg;
+   0218 78r25              1431 	mov	r0,#_lastPacketId
+   021A EF                 1432 	mov	a,r7
+   021B F2                 1433 	movx	@r0,a
+   021C 08                 1434 	inc	r0
+   021D EE                 1435 	mov	a,r6
+   021E F2                 1436 	movx	@r0,a
+                    021F   1437 	C$radio_receive_test_with_usb_com.c$243$2$4 ==.
+                           1438 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:243: while(usbComTxAvailable() < 4) {
+   021F                    1439 00107$:
+   021F C0 07              1440 	push	ar7
+   0221 C0 06              1441 	push	ar6
+   0223 12s00r00           1442 	lcall	_usbComTxAvailable
+   0226 AD 82              1443 	mov	r5,dpl
+   0228 D0 06              1444 	pop	ar6
+   022A D0 07              1445 	pop	ar7
+   022C BD 04 00           1446 	cjne	r5,#0x04,00125$
+   022F                    1447 00125$:
+   022F 50 19              1448 	jnc	00109$
+                    0231   1449 	C$radio_receive_test_with_usb_com.c$244$3$6 ==.
+                           1450 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:244: boardService();
+   0231 C0 07              1451 	push	ar7
+   0233 C0 06              1452 	push	ar6
+   0235 12s00r00           1453 	lcall	_boardService
+                    0238   1454 	C$radio_receive_test_with_usb_com.c$245$3$6 ==.
+                           1455 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:245: updateLeds();
+   0238 12s00r00           1456 	lcall	_updateLeds
+                    023B   1457 	C$radio_receive_test_with_usb_com.c$246$3$6 ==.
+                           1458 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:246: usbComService();
+   023B 12s00r00           1459 	lcall	_usbComService
+                    023E   1460 	C$radio_receive_test_with_usb_com.c$247$3$6 ==.
+                           1461 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:247: processBytesFromUsb();
+   023E 12s01r04           1462 	lcall	_processBytesFromUsb
+                    0241   1463 	C$radio_receive_test_with_usb_com.c$248$3$6 ==.
+                           1464 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:248: receivePackets();
+   0241 12s01r28           1465 	lcall	_receivePackets
+   0244 D0 06              1466 	pop	ar6
+   0246 D0 07              1467 	pop	ar7
+   0248 80 D5              1468 	sjmp	00107$
+   024A                    1469 00109$:
+                    024A   1470 	C$radio_receive_test_with_usb_com.c$255$2$4 ==.
+                           1471 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:255: responseLength = sprintf(response, "%u,%04x%04x\n", msg, (uint16)(time >> 16), (uint16)time);
+   024A 78r2C              1472 	mov	r0,#_receivePackets_time_1_1
+   024C E2                 1473 	movx	a,@r0
+   024D FA                 1474 	mov	r2,a
+   024E 08                 1475 	inc	r0
+   024F E2                 1476 	movx	a,@r0
+   0250 FB                 1477 	mov	r3,a
+   0251 78r2E              1478 	mov	r0,#(_receivePackets_time_1_1 + 2)
+   0253 E2                 1479 	movx	a,@r0
+   0254 FC                 1480 	mov	r4,a
+   0255 08                 1481 	inc	r0
+   0256 E2                 1482 	movx	a,@r0
+   0257 FD                 1483 	mov	r5,a
+   0258 C0 02              1484 	push	ar2
+   025A C0 03              1485 	push	ar3
+   025C C0 04              1486 	push	ar4
+   025E C0 05              1487 	push	ar5
+   0260 C0 07              1488 	push	ar7
+   0262 C0 06              1489 	push	ar6
+   0264 74r12              1490 	mov	a,#__str_1
+   0266 C0 E0              1491 	push	acc
+   0268 74s00              1492 	mov	a,#(__str_1 >> 8)
+   026A C0 E0              1493 	push	acc
+   026C 74 80              1494 	mov	a,#0x80
+   026E C0 E0              1495 	push	acc
+   0270 74r00              1496 	mov	a,#_response
+   0272 C0 E0              1497 	push	acc
+   0274 74s00              1498 	mov	a,#(_response >> 8)
+   0276 C0 E0              1499 	push	acc
+   0278 E4                 1500 	clr	a
+   0279 C0 E0              1501 	push	acc
+   027B 12s00r00           1502 	lcall	_sprintf
+   027E AE 82              1503 	mov	r6,dpl
+   0280 E5 81              1504 	mov	a,sp
+   0282 24 F4              1505 	add	a,#0xf4
+   0284 F5 81              1506 	mov	sp,a
+   0286 78r00              1507 	mov	r0,#_usbComTxSend_PARM_2
+   0288 EE                 1508 	mov	a,r6
+   0289 F2                 1509 	movx	@r0,a
+                    028A   1510 	C$radio_receive_test_with_usb_com.c$256$2$4 ==.
+                           1511 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:256: usbComTxSend(response, responseLength);
+   028A 90s00r00           1512 	mov	dptr,#_response
+   028D 12s00r00           1513 	lcall	_usbComTxSend
+   0290                    1514 00112$:
+                    0290   1515 	C$radio_receive_test_with_usb_com.c$258$2$1 ==.
+                    0290   1516 	XG$receivePackets$0$0 ==.
+   0290 22                 1517 	ret
+                           1518 ;------------------------------------------------------------
+                           1519 ;Allocation info for local variables in function 'main'
+                           1520 ;------------------------------------------------------------
+                    0291   1521 	G$main$0$0 ==.
+                    0291   1522 	C$radio_receive_test_with_usb_com.c$260$2$1 ==.
+                           1523 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:260: void main()
+                           1524 ;	-----------------------------------------
+                           1525 ;	 function main
+                           1526 ;	-----------------------------------------
+   0291                    1527 _main:
+                    0291   1528 	C$radio_receive_test_with_usb_com.c$262$1$1 ==.
+                           1529 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:262: radioQueueChangeChannel(param_radio_channel);
+   0291 90s00r00           1530 	mov	dptr,#_param_radio_channel
+   0294 E4                 1531 	clr	a
+   0295 93                 1532 	movc	a,@a+dptr
+   0296 FC                 1533 	mov	r4,a
+   0297 74 01              1534 	mov	a,#0x01
+   0299 93                 1535 	movc	a,@a+dptr
+   029A 74 02              1536 	mov	a,#0x02
+   029C 93                 1537 	movc	a,@a+dptr
+   029D 74 03              1538 	mov	a,#0x03
+   029F 93                 1539 	movc	a,@a+dptr
+   02A0 8C 82              1540 	mov	dpl,r4
+   02A2 12s00r00           1541 	lcall	_radioQueueChangeChannel
+                    02A5   1542 	C$radio_receive_test_with_usb_com.c$263$1$1 ==.
+                           1543 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:263: systemInit();
+   02A5 12s00r00           1544 	lcall	_systemInit
+                    02A8   1545 	C$radio_receive_test_with_usb_com.c$264$1$1 ==.
+                           1546 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:264: usbInit();
+   02A8 12s00r00           1547 	lcall	_usbInit
+                    02AB   1548 	C$radio_receive_test_with_usb_com.c$265$1$1 ==.
+                           1549 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:265: radioQueueInit();
+   02AB 12s00r00           1550 	lcall	_radioQueueInit
+                    02AE   1551 	C$radio_receive_test_with_usb_com.c$267$1$1 ==.
+                           1552 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:267: while(1)
+   02AE                    1553 00102$:
+                    02AE   1554 	C$radio_receive_test_with_usb_com.c$269$2$2 ==.
+                           1555 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:269: boardService();
+   02AE 12s00r00           1556 	lcall	_boardService
+                    02B1   1557 	C$radio_receive_test_with_usb_com.c$270$2$2 ==.
+                           1558 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:270: updateLeds();
+   02B1 12s00r00           1559 	lcall	_updateLeds
+                    02B4   1560 	C$radio_receive_test_with_usb_com.c$271$2$2 ==.
+                           1561 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:271: usbComService();
+   02B4 12s00r00           1562 	lcall	_usbComService
+                    02B7   1563 	C$radio_receive_test_with_usb_com.c$272$2$2 ==.
+                           1564 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:272: processBytesFromUsb();
+   02B7 12s01r04           1565 	lcall	_processBytesFromUsb
+                    02BA   1566 	C$radio_receive_test_with_usb_com.c$273$2$2 ==.
+                           1567 ;	apps/radio_receive_test_with_usb_com/radio_receive_test_with_usb_com.c:273: receivePackets();
+   02BA 12s01r28           1568 	lcall	_receivePackets
+   02BD 80 EF              1569 	sjmp	00102$
+                    02BF   1570 	C$radio_receive_test_with_usb_com.c$275$1$1 ==.
+                    02BF   1571 	XG$main$0$0 ==.
+   02BF 22                 1572 	ret
+                           1573 	.area CSEG    (CODE)
+                           1574 	.area CONST   (CODE)
+                    0000   1575 Fradio_receive_test_with_usb_com$_str_0$0$0 == .
+   0000                    1576 __str_0:
+   0000 74 69 6D 65 3D 30  1577 	.ascii "time=0x%04x%04x"
+        78 25 30 34 78 25
+        30 34 78
+   000F 0D                 1578 	.db 0x0D
+   0010 0A                 1579 	.db 0x0A
+   0011 00                 1580 	.db 0x00
+                    0012   1581 Fradio_receive_test_with_usb_com$_str_1$0$0 == .
+   0012                    1582 __str_1:
+   0012 25 75 2C 25 30 34  1583 	.ascii "%u,%04x%04x"
+        78 25 30 34 78
+   001D 0A                 1584 	.db 0x0A
+   001E 00                 1585 	.db 0x00
+                           1586 	.area XINIT   (CODE)
+                           1587 	.area CABS    (ABS,CODE)

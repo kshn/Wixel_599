@@ -1,0 +1,7 @@
+#include <led_blink.h>
+void toggle_led()
+{
+    LED_RED_TOGGLE();
+    LED_YELLOW_TOGGLE();
+}
+    

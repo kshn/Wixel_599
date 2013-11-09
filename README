@@ -1,0 +1,2 @@
+This repository contains the files needed to write apps for the Pololu Wixel. It contains the apps and libraries found in the wixel-sdk folder available online, in addition to files from Matt, used to determine the packet loss percentage in the wixel.
+Ultimately, the goal is to write a library to enable unreliable broadcast and reliable unicast connection between a host and a set of nodes. This is for use with the Dynamixel motors, which can be used to construct various bots/structures.
