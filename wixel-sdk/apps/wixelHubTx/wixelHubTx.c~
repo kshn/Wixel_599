@@ -118,7 +118,7 @@ void receiveCommands()
         switch(byte)
         {
         case 'Y': blinkYellow = 1; break;
-        //case 's': sendSyncPulse(); response[0] = 's'; break; 
+        case 's': sendSyncPulse(); response[0] = 's'; break; 
         default: response[0] = '?'; break;
         }
         usbComTxSend(response, responseLength);
