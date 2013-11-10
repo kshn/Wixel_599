@@ -86,16 +86,16 @@ void updateLeds()
 void sendSyncPulse()
 {
 
-    //uint8 i;
-    uint8 XDATA *msg;
-    *msg = '$';
-    //sync = '*';
-    // Data
-    /*for(i=0; i<5; i++)
+    uint8 i;
+    uint8 XDATA sync = 'q';
+    uint8 XDATA msg[20] = "Sending sync pulse.";
+    uint8 XDATA msg2[12] = "Inside loop";
+    for(i=0; i<5; i++)
     {
+        usbComTxSend(msg2, 12);
         radioComTxSendByte(sync);
-    }*/
-    usbComTxSend(msg, 1);
+    }
+    usbComTxSend(msg, 20);
 }
 
 
@@ -118,7 +118,7 @@ void receiveCommands()
         switch(byte)
         {
         case 'Y': blinkYellow = 1; break;
-        case 's': sendSyncPulse(); response[0] = 's'; break; 
+        case 's': sendSyncPulse(); break; 
         default: response[0] = '?'; break;
         }
         usbComTxSend(response, responseLength);
@@ -137,6 +137,7 @@ void main()
         boardService();
         updateLeds();
         usbComService();
+        radioComTxService();
         receiveCommands();
     }
 }
